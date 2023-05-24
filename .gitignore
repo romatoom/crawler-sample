@@ -1,6 +1,8 @@
 .idea
+*.log
+
 dist/
 node_modules/
 storage/
-prepared_data/
+prepared_data/*.json
 databases/mi.db

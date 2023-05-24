@@ -4,15 +4,14 @@ import { BASE_URL, labels } from "./constants.js";
 import postProcessingData from "./utils/post-processer.js";
 import exportDataToSqlite from "./utils/exporter.js";
 
-/*
-log.setLevel(log.LEVELS.DEBUG);
-log.debug("Setting up crawler.");
+log.setLevel(log.LEVELS.INFO);
+log.info("Setting up crawler.");
 
 const crawler = new CheerioCrawler({
   requestHandler: router,
 });
 
-log.debug("Adding requests to the queue.");
+log.info("Adding requests to the queue.");
 
 await crawler.addRequests([
   {
@@ -38,6 +37,6 @@ await manuals.exportToJSON("OUTPUT", { toKVS: "manuals" });
 
 products = await Dataset.open("products");
 await products.exportToJSON("OUTPUT", { toKVS: "products" });
-*/
+
 await postProcessingData();
 await exportDataToSqlite();

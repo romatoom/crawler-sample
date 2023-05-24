@@ -11,9 +11,7 @@
     "sqlite3": "^5.1.6"
   },
   "scripts": {
-    "start": "node src/main.js",
-    "exporter": "node src/exporter.js",
-    "test": "echo \"Error: oops, the actor has no tests yet, sad!\" && exit 1"
+    "start": "node src/main.js"
   },
   "author": "It's not you it's me",
   "license": "ISC"

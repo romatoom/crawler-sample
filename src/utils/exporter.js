@@ -2,12 +2,15 @@ import fs from "fs";
 import { copyFile } from "node:fs/promises";
 import sqlite3 from "sqlite3";
 import { open } from "sqlite";
+import { log } from "crawlee";
 
 import {
   PATH_OF_PREPARED_MANUALS,
   PATH_OF_PREPARED_PRODUCTS,
   PATH_OF_PREPARED_PRODUCTS_MANUALS,
 } from "../constants.js";
+
+log.setLevel(log.LEVELS.INFO);
 
 const sqlite = sqlite3.verbose();
 
@@ -18,7 +21,7 @@ async function recreateSqliteDBFile() {
   try {
     await copyFile("databases/empty.db", "databases/mi.db");
   } catch (err) {
-    console.log("Error while recreating database file:", err);
+    log.error("Error while recreating database file:", err);
   }
 }
 
@@ -40,9 +43,9 @@ function readJSONData() {
 }
 
 export default async function exportDataToSqlite() {
-  await recreateSqliteDBFile();
+  log.info("Start exporting data to SQLite.");
 
-  console.log("Start exporting data to SQLite");
+  await recreateSqliteDBFile();
 
   const { products, manuals, productsManuals } = readJSONData();
 
@@ -51,10 +54,8 @@ export default async function exportDataToSqlite() {
       filename: "databases/mi.db",
       driver: sqlite3.cached.Database,
     });
-
-    console.log("DB opened");
   } catch (err) {
-    return console.error(err.message);
+    return log.error(err.message);
   }
 
   try {
@@ -72,7 +73,7 @@ export default async function exportDataToSqlite() {
       ];
 
       await db.run(sql, values, (err) => {
-        if (err) console.error(err.message);
+        if (err) log.error(err.message);
       });
     }
 
@@ -88,7 +89,7 @@ export default async function exportDataToSqlite() {
       ];
 
       await db.run(sql, values, (err) => {
-        if (err) console.error(err.message);
+        if (err) log.error(err.message);
       });
     }
 
@@ -99,13 +100,13 @@ export default async function exportDataToSqlite() {
       const values = [productManual.product_id, productManual.manual_id];
 
       await db.run(sql, values, (err) => {
-        if (err) console.error(err.message);
+        if (err) log.error(err.message);
       });
     }
 
-    console.log("Data inserted to DB");
+    log.info("Data exported successfully.");
   } catch (err) {
-    console.error(err.message);
+    log.error(err.message);
   } finally {
     db.close();
   }

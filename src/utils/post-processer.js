@@ -3,6 +3,8 @@ import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 const { groupBy } = pkg;
 
+import { log } from "crawlee";
+
 import {
   PATH_OF_MANUALS_PATH,
   PATH_OF_PRODUCTS_PATH,
@@ -10,6 +12,8 @@ import {
   PATH_OF_PREPARED_PRODUCTS,
   PATH_OF_PREPARED_PRODUCTS_MANUALS,
 } from "../constants.js";
+
+log.setLevel(log.LEVELS.INFO);
 
 function cleanedManualTitle(title) {
   let regexp =
@@ -65,6 +69,8 @@ function productsManualsReferences(products, manuals) {
 }
 
 export default async function postProcessingData() {
+  log.info("Start post-processing.");
+
   const rawDataManuals = fs.readFileSync(PATH_OF_MANUALS_PATH);
   const manuals = JSON.parse(rawDataManuals);
 

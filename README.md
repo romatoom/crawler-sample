@@ -1,9 +1,7 @@
-# Getting started with Crawlee
+# Скраппер
+Для срапинга используется библиотека [Crawlee](https://crawlee.dev).
 
-This example uses `PlaywrightCrawler` to recursively crawl https://crawlee.dev using the browser automation library [Playwright](https://playwright.dev).
+# Запуск скраппера
+yarn start
 
-You can find more examples and documentation at the following links:
-
-- [Step-by-step tutorial](https://crawlee.dev/docs/introduction) for Crawlee
-- `PlaywrightCrawler` [API documentation](https://crawlee.dev/api/playwright-crawler/class/PlaywrightCrawler)
-- Other [examples](https://crawlee.dev/docs/examples/playwright-crawler)
+Сгенерированная после работы программы БД в формате SQLite будет находится в папке **databases**
