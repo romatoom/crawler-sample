@@ -1,5 +1,5 @@
 import { labels } from "../constants.js";
-import { formatTitle } from "../utils/formatters.js";
+import { normalizeTitle } from "#utils/formatters.js";
 
 export default function addHandlerStartUserGuides(router) {
   router.addHandler(
@@ -20,7 +20,7 @@ export default function addHandlerStartUserGuides(router) {
             label: labels.USER_GUID,
             userData: {
               data: {
-                language: formatTitle(element.text().trim()),
+                language: normalizeTitle(element.text()),
               },
             },
           },

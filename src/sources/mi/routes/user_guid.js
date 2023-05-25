@@ -1,6 +1,6 @@
 import { Dataset } from "crawlee";
 import { labels } from "../constants.js";
-import { materialTypeByManualTitle } from "../utils/formatters.js";
+import { materialTypeByManualTitle } from "#utils/formatters.js";
 
 export default function addHandlerUserGuid(router) {
   router.addHandler(labels.USER_GUID, async ({ request, $, log }) => {
@@ -25,12 +25,12 @@ export default function addHandlerUserGuid(router) {
           materialType,
           pdfUrl,
           title,
-          language: request.userData.data.language
+          language: request.userData.data.language,
         });
       }
     });
 
-    const manuals = await Dataset.open("manuals");
+    const manuals = await Dataset.open("mi/manuals");
     await manuals.pushData(results);
   });
 }

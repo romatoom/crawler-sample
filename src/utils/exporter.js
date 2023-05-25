@@ -8,7 +8,7 @@ import {
   PATH_OF_PREPARED_MANUALS,
   PATH_OF_PREPARED_PRODUCTS,
   PATH_OF_PREPARED_PRODUCTS_MANUALS,
-} from "../constants.js";
+} from "#sources/mi/constants.js";
 
 log.setLevel(log.LEVELS.INFO);
 

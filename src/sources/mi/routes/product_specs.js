@@ -24,7 +24,7 @@ export default function addHandlerProductSpecs(router) {
       images: imageSrc ? [imageSrc] : [],
     };
 
-    const productsDataset = await Dataset.open("products");
+    const productsDataset = await Dataset.open("mi/products");
     await productsDataset.pushData(product);
   });
 }

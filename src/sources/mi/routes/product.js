@@ -37,7 +37,7 @@ export default function addHandlerProduct(router) {
         images: [],
       };
 
-      const productsDataset = await Dataset.open("products");
+      const productsDataset = await Dataset.open("mi/products");
       await productsDataset.pushData(product);
     }
   });

@@ -14,5 +14,16 @@
     "start": "node src/main.js"
   },
   "author": "It's not you it's me",
-  "license": "ISC"
+  "license": "ISC",
+  "imports": {
+    "#root/*": {
+      "default": "./*"
+    },
+    "#sources/*": {
+      "default": "./src/sources/*"
+    },
+    "#utils/*": {
+      "default": "./src/utils/*"
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import fs from "fs";
-
 import pkg from "core-js/actual/array/group-by.js";
+
+import { cleanedManualTitle } from "#utils/formatters.js";
 const { groupBy } = pkg;
 
 import { log } from "crawlee";
@@ -11,20 +12,9 @@ import {
   PATH_OF_PREPARED_MANUALS,
   PATH_OF_PREPARED_PRODUCTS,
   PATH_OF_PREPARED_PRODUCTS_MANUALS,
-} from "../constants.js";
+} from "../sources/mi/constants.js";
 
 log.setLevel(log.LEVELS.INFO);
-
-function cleanedManualTitle(title) {
-  let regexp =
-    /Generic User Guide for|Generic User Guide|General User Guide|User Guide|Safety Information|Quick Start Guide|Adapter Information|\(M2110E1\)|\(M2133E1\)/;
-
-  // Mi Smart Air Fryer (3.5L) -> Mi Smart Air Fryer 3.5L
-  // Redmi Buds 3 Lite
-  let cleanedTitle = title.replace(regexp, "").trim();
-  regexp = /\(3.5L\)/;
-  return cleanedTitle.replace(regexp, "3.5L");
-}
 
 /* function usedIndexes(products, manuals) {
   const usedProductsIndexes = new Set();
