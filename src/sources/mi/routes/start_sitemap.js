@@ -1,8 +1,8 @@
-import { labels } from "../constants.js";
+import { LABELS } from "../constants.js";
 
 export default function addHandlerStartSitemap(router) {
   router.addHandler(
-    labels.START_SITEMAP,
+    LABELS.START_SITEMAP,
     async ({ request, crawler, $, log }) => {
       log.debug(`request.url: ${request.url}`);
 
@@ -25,7 +25,7 @@ export default function addHandlerStartSitemap(router) {
           await crawler.addRequests([
             {
               url: productItemElement.attr("href"),
-              label: labels.PRODUCT,
+              label: LABELS.PRODUCT,
               userData: {
                 data: {
                   name: productItemElement.text().trim(),

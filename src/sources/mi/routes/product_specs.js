@@ -1,8 +1,8 @@
 import { Dataset } from "crawlee";
-import { labels } from "../constants.js";
+import { LABELS } from "../constants.js";
 
 export default function addHandlerProductSpecs(router) {
-  router.addHandler(labels.PRODUCT_SPECS, async ({ request, $, log }) => {
+  router.addHandler(LABELS.PRODUCT_SPECS, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 
     const specs = [];

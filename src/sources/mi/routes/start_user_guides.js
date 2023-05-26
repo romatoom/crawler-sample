@@ -1,9 +1,9 @@
-import { labels } from "../constants.js";
+import { LABELS } from "../constants.js";
 import { normalizeTitle } from "#utils/formatters.js";
 
 export default function addHandlerStartUserGuides(router) {
   router.addHandler(
-    labels.START_USER_GUIDES,
+    LABELS.START_USER_GUIDES,
     async ({ request, crawler, $, log }) => {
       log.debug(`request.url: ${request.url}`);
 
@@ -17,7 +17,7 @@ export default function addHandlerStartUserGuides(router) {
         await crawler.addRequests([
           {
             url,
-            label: labels.USER_GUID,
+            label: LABELS.USER_GUID,
             userData: {
               data: {
                 language: normalizeTitle(element.text()),

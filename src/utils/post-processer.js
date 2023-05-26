@@ -1,18 +1,12 @@
 import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 
-import { cleanedManualTitle } from "#utils/formatters.js";
+import { MI_FORMATTERS } from "#utils/formatters.js";
 const { groupBy } = pkg;
 
 import { log } from "crawlee";
 
-import {
-  PATH_OF_MANUALS_PATH,
-  PATH_OF_PRODUCTS_PATH,
-  PATH_OF_PREPARED_MANUALS,
-  PATH_OF_PREPARED_PRODUCTS,
-  PATH_OF_PREPARED_PRODUCTS_MANUALS,
-} from "../sources/mi/constants.js";
+import { pathOfEntity, pathOfPreparedEntity } from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -24,7 +18,7 @@ log.setLevel(log.LEVELS.INFO);
     for (const [manualIndex, manual] of manuals.entries()) {
       if (
         product.name.toLowerCase() ===
-        cleanedManualTitle(manual.title).toLowerCase()
+        MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
       ) {
         usedProductsIndexes.add(productIndex);
         usedManualsIndexes.add(manualIndex);
@@ -45,7 +39,7 @@ function productsManualsReferences(products, manuals) {
     for (const [manualIndex, manual] of manuals.entries()) {
       if (
         product.name.toLowerCase() ===
-        cleanedManualTitle(manual.title).toLowerCase()
+        MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
       ) {
         references.push({
           product_id: productIndex + 1,
@@ -58,13 +52,13 @@ function productsManualsReferences(products, manuals) {
   return references;
 }
 
-export default async function postProcessingData() {
+export default async function postProcessingData(sourceName) {
   log.info("Start post-processing.");
 
-  const rawDataManuals = fs.readFileSync(PATH_OF_MANUALS_PATH);
+  const rawDataManuals = fs.readFileSync(pathOfEntity(sourceName, "manuals"));
   const manuals = JSON.parse(rawDataManuals);
 
-  const rawDataProducts = fs.readFileSync(PATH_OF_PRODUCTS_PATH);
+  const rawDataProducts = fs.readFileSync(pathOfEntity(sourceName, "products"));
   const products = JSON.parse(rawDataProducts);
 
   const groupedManuals = manuals.groupBy((manual) => {
@@ -98,13 +92,14 @@ export default async function postProcessingData() {
   const references = productsManualsReferences(products, preparedManuals);
 
   let data = JSON.stringify(preparedManuals);
-  fs.writeFileSync(PATH_OF_PREPARED_MANUALS, data);
+  fs.writeFileSync(pathOfPreparedEntity(sourceName, "manuals"), data);
 
   data = JSON.stringify(products);
-  fs.writeFileSync(PATH_OF_PREPARED_PRODUCTS, data);
+  fs.writeFileSync(pathOfPreparedEntity(sourceName, "products"), data);
 
   data = JSON.stringify(references);
-  fs.writeFileSync(PATH_OF_PREPARED_PRODUCTS_MANUALS, data);
+  fs.writeFileSync(pathOfPreparedEntity(sourceName, "products_manuals"), data);
 }
 
 // 2986 manuals, 275 products, 1301 products_manuals
+// 3124 manuals, 275 products, 1336 products_manuals

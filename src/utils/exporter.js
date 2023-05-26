@@ -5,10 +5,8 @@ import { open } from "sqlite";
 import { log } from "crawlee";
 
 import {
-  PATH_OF_PREPARED_MANUALS,
-  PATH_OF_PREPARED_PRODUCTS,
-  PATH_OF_PREPARED_PRODUCTS_MANUALS,
-} from "#sources/mi/constants.js";
+  pathOfPreparedEntity
+} from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -17,22 +15,22 @@ const sqlite = sqlite3.verbose();
 let sql;
 let db;
 
-async function recreateSqliteDBFile() {
+async function recreateSqliteDBFile(sourceName) {
   try {
-    await copyFile("databases/empty.db", "databases/mi.db");
+    await copyFile("databases/empty.db", `databases/${sourceName}.db`);
   } catch (err) {
-    log.error("Error while recreating database file:", err);
+    log.error(`Error while recreating database file "${sourceName}.db":`, err);
   }
 }
 
-function readJSONData() {
-  let rawData = fs.readFileSync(PATH_OF_PREPARED_PRODUCTS);
+function readJSONData(sourceName) {
+  let rawData = fs.readFileSync(pathOfPreparedEntity(sourceName, "products"));
   const products = JSON.parse(rawData);
 
-  rawData = fs.readFileSync(PATH_OF_PREPARED_MANUALS);
+  rawData = fs.readFileSync(pathOfPreparedEntity(sourceName, "manuals"));
   const manuals = JSON.parse(rawData);
 
-  rawData = fs.readFileSync(PATH_OF_PREPARED_PRODUCTS_MANUALS);
+  rawData = fs.readFileSync(pathOfPreparedEntity(sourceName, "products_manuals"));
   const productsManuals = JSON.parse(rawData);
 
   return {
@@ -42,16 +40,16 @@ function readJSONData() {
   };
 }
 
-export default async function exportDataToSqlite() {
-  log.info("Start exporting data to SQLite.");
+export default async function exportDataToSqlite(sourceName) {
+  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
 
-  await recreateSqliteDBFile();
+  await recreateSqliteDBFile(sourceName);
 
-  const { products, manuals, productsManuals } = readJSONData();
+  const { products, manuals, productsManuals } = readJSONData(sourceName);
 
   try {
     db = await open({
-      filename: "databases/mi.db",
+      filename: `databases/${sourceName}.db`,
       driver: sqlite3.cached.Database,
     });
   } catch (err) {

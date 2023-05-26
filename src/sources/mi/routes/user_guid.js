@@ -1,9 +1,9 @@
 import { Dataset } from "crawlee";
-import { labels } from "../constants.js";
-import { materialTypeByManualTitle } from "#utils/formatters.js";
+import { LABELS } from "../constants.js";
+import { MI_FORMATTERS } from "#utils/formatters.js";
 
 export default function addHandlerUserGuid(router) {
-  router.addHandler(labels.USER_GUID, async ({ request, $, log }) => {
+  router.addHandler(LABELS.USER_GUID, async ({ request, $, log }) => {
     log.debug(`Extracting data: ${request.url}`);
 
     const results = [];
@@ -18,7 +18,7 @@ export default function addHandlerUserGuid(router) {
 
       const pdfUrl = $(el).attr("href");
 
-      const materialType = materialTypeByManualTitle(title);
+      const materialType = MI_FORMATTERS.materialTypeByManualTitle(title);
 
       if (title !== "" && pdfUrl.startsWith("https://")) {
         results.push({

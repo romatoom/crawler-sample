@@ -1,8 +1,8 @@
 import { Dataset } from "crawlee";
-import { labels } from "../constants.js";
+import { LABELS } from "../constants.js";
 
 export default function addHandlerProduct(router) {
-  router.addHandler(labels.PRODUCT, async ({ request, crawler, $, log }) => {
+  router.addHandler(LABELS.PRODUCT, async ({ request, crawler, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 
     const BRAND = "Xiaomi";
@@ -18,7 +18,7 @@ export default function addHandlerProduct(router) {
       await crawler.addRequests([
         {
           url: specLinkUrl,
-          label: labels.PRODUCT_SPECS,
+          label: LABELS.PRODUCT_SPECS,
           userData: {
             data: {
               ...request.userData.data,
