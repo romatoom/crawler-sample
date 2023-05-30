@@ -4,5 +4,4 @@
 dist/
 node_modules/
 storage/
-prepared_data/*/*.json
-databases/mi.db
+

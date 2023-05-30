@@ -4,9 +4,8 @@ import { copyFile } from "node:fs/promises";
 import { open } from "sqlite";
 import { log } from "crawlee";
 import { snakeCase } from "snake-case";
+import getPreparedData from "#utils/data_preparer.js";
 import { MI_FORMATTERS } from "#utils/formatters.js";
-
-import { pathOfPreparedEntity } from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -25,19 +24,6 @@ async function prepareSqliteDBFile(sourceName) {
   } catch (err) {
     log.error(`Error while preparing database file "${sourceName}.db":`, err);
   }
-}
-
-function readJSONData(sourceName) {
-  let rawData = fs.readFileSync(pathOfPreparedEntity(sourceName, "products"));
-  const products = JSON.parse(rawData);
-
-  rawData = fs.readFileSync(pathOfPreparedEntity(sourceName, "manuals"));
-  const manuals = JSON.parse(rawData);
-
-  return {
-    products,
-    manuals,
-  };
 }
 
 function productsManualsReferences(products, manuals) {
@@ -65,7 +51,7 @@ export default async function exportDataToSqlite(sourceName) {
 
   await prepareSqliteDBFile(sourceName);
 
-  const { products, manuals, productsManuals } = readJSONData(sourceName);
+  const { products, manuals } = await getPreparedData(sourceName);
 
   try {
     db = await open({

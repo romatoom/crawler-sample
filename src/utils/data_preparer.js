@@ -5,11 +5,11 @@ const { groupBy } = pkg;
 
 import { log } from "crawlee";
 
-import { pathOfEntity, pathOfPreparedEntity } from "#utils/paths.js";
+import pathOfEntity from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
-export default async function postProcessingData(sourceName) {
+export default async function getPreparedData(sourceName) {
   log.info("Start post-processing.");
 
   const rawDataManuals = fs.readFileSync(pathOfEntity(sourceName, "manuals"));
@@ -33,9 +33,8 @@ export default async function postProcessingData(sourceName) {
     preparedManuals.push(manual);
   }
 
-  let data = JSON.stringify(preparedManuals);
-  fs.writeFileSync(pathOfPreparedEntity(sourceName, "manuals"), data);
-
-  data = JSON.stringify(products);
-  fs.writeFileSync(pathOfPreparedEntity(sourceName, "products"), data);
+  return {
+    products,
+    manuals: preparedManuals,
+  };
 }

@@ -7,7 +7,7 @@ export default function addHandlerProductSpecs(router) {
 
     const specs = [];
     const specsElements = $("[data-key^=spec_]");
-    specsElements.each((index, spec) => specs.push($(spec).text().trim()));
+    specsElements.each((_, spec) => specs.push($(spec).text().trim()));
 
     const image = $("img");
 
@@ -18,9 +18,11 @@ export default function addHandlerProductSpecs(router) {
 
     const product = {
       ...request.userData.data,
-      specs: {
-        textData: specs,
-      },
+      specs: [
+        {
+          text_data: specs,
+        },
+      ],
       images: imageSrc ? [imageSrc] : [],
     };
 
