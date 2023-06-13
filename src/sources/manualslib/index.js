@@ -7,7 +7,6 @@ import { router } from "./routes.js";
 import { BASE_URL, SOURCE_NAME, LABELS } from "./constants.js";
 import { proxyConfiguration } from "#utils/proxy_config.js";
 
-import postProcessingData from "#utils/data_preparer.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 

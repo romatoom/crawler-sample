@@ -1,7 +1,6 @@
 import { CheerioCrawler, log } from "crawlee";
 import { router } from "./routes.js";
 import { BASE_URL, SOURCE_NAME, LABELS } from "./constants.js";
-import postProcessingData from "#utils/data_preparer.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 
@@ -28,8 +27,7 @@ export default async function startMi() {
 
   await dropDatasets(SOURCE_NAME);
   await crawler.run();
-  await exportDatasets(SOURCE_NAME);
 
-  await postProcessingData(SOURCE_NAME);
+  await exportDatasets(SOURCE_NAME);
   await exportDataToSqlite(SOURCE_NAME);
 }

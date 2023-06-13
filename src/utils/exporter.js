@@ -5,7 +5,10 @@ import { open } from "sqlite";
 import { log } from "crawlee";
 import { snakeCase } from "snake-case";
 import getPreparedData from "#utils/data_preparer.js";
-import { MI_FORMATTERS } from "#utils/formatters.js";
+import {
+  MI_FORMATTERS,
+  CENTRAL_MANUALS_FORMATTERS,
+} from "#utils/formatters.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -26,15 +29,33 @@ async function prepareSqliteDBFile(sourceName) {
   }
 }
 
-function productsManualsReferences(products, manuals) {
+function productsManualsReferences(products, manuals, sourceName) {
+  function productNameContainsInManualTitle(product, manual) {
+    switch (sourceName) {
+      case "mi":
+        return (
+          product.name.toLowerCase() ===
+          MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
+        );
+      case "central-manuals":
+        const { productName, brand } =
+          CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manual.title);
+
+        const productNames = productName.split(" / ");
+
+        return productNames.includes(product.name) && product.brand === brand;
+      default:
+        return false;
+    }
+  }
+
+  log.info(`Prepare products-manuals references.`);
+
   const references = [];
 
   for (const [productIndex, product] of products.entries()) {
     for (const [manualIndex, manual] of manuals.entries()) {
-      if (
-        product.name.toLowerCase() ===
-        MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
-      ) {
+      if (productNameContainsInManualTitle(product, manual)) {
         references.push({
           product_id: productIndex + 1,
           manual_id: manualIndex + 1,
@@ -47,9 +68,9 @@ function productsManualsReferences(products, manuals) {
 }
 
 export default async function exportDataToSqlite(sourceName) {
-  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
-
   await prepareSqliteDBFile(sourceName);
+
+  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
 
   const { products, manuals } = await getPreparedData(sourceName);
 
@@ -81,16 +102,21 @@ export default async function exportDataToSqlite(sourceName) {
   try {
     // Insert or update products to DB
 
+    log.info(`Export products.`);
     for (const product of products) {
-      sql = "SELECT id FROM products WHERE name = ?";
+      sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
 
       // Find product
-      const productId = await db.get(sql, [product.name], (err, row) => {
-        if (err) {
-          return console.error(err.message);
+      const productId = await db.get(
+        sql,
+        [product.brand, product.name],
+        (err, row) => {
+          if (err) {
+            return console.error(err.message);
+          }
+          return row?.id;
         }
-        return row?.id;
-      });
+      );
 
       // Update row, if product exist in DB
       if (productId) {
@@ -132,6 +158,7 @@ export default async function exportDataToSqlite(sourceName) {
       }
     }
 
+    log.info(`Export manuals.`);
     // Insert or update manuals to DB
     for (const manual of manuals) {
       sql = "SELECT id FROM manuals WHERE pdf_url = ?";
@@ -195,8 +222,13 @@ export default async function exportDataToSqlite(sourceName) {
     });
 
     // get productsManuals references;
-    const productsManuals = productsManualsReferences(dbProducts, dbManuals);
+    const productsManuals = productsManualsReferences(
+      dbProducts,
+      dbManuals,
+      sourceName
+    );
 
+    log.info(`Export products_manuals.`);
     // Insert products_manuals to DB
     for (const productManual of productsManuals) {
       sql =
@@ -249,3 +281,7 @@ export default async function exportDataToSqlite(sourceName) {
     db.close();
   }
 }
+
+// Inserted 22868 records to table "products".
+// Inserted 24019 records to table "manuals".
+// Inserted 29991 records to table "products_manuals".

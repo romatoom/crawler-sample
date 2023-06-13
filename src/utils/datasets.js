@@ -1,4 +1,4 @@
-import { Dataset } from "crawlee";
+import { Dataset, log } from "crawlee";
 
 export async function dropDatasets(sourceName) {
   const manuals = await Dataset.open(`${sourceName}/manuals`);
@@ -9,6 +9,8 @@ export async function dropDatasets(sourceName) {
 }
 
 export async function exportDatasets(sourceName) {
+  log.info("Export datasets.");
+
   const manuals = await Dataset.open(`${sourceName}/manuals`);
   await manuals.exportToJSON("OUTPUT", { toKVS: `${sourceName}/manuals` });
 
