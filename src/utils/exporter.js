@@ -12,8 +12,6 @@ import {
 
 log.setLevel(log.LEVELS.INFO);
 
-const sqlite = sqlite3.verbose();
-
 let sql;
 let db;
 
@@ -281,7 +279,3 @@ export default async function exportDataToSqlite(sourceName) {
     db.close();
   }
 }
-
-// Inserted 22868 records to table "products".
-// Inserted 24019 records to table "manuals".
-// Inserted 29991 records to table "products_manuals".

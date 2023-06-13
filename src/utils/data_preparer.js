@@ -3,8 +3,6 @@ import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 
-import varSave from "#utils/var_saver.js";
-
 const { groupBy } = pkg;
 
 import { log } from "crawlee";
@@ -39,7 +37,9 @@ function prepareManuals(manuals, sourceName) {
       for (const [_, manuals] of Object.entries(groupedManuals)) {
         const manual = { ...manuals[0] };
 
-        const languages = [...new Set(manuals.map((manual) => manual.language))];
+        const languages = [
+          ...new Set(manuals.map((manual) => manual.language)),
+        ];
         delete manual.language;
         manual.languages = languages;
 
@@ -72,10 +72,8 @@ export default async function getPreparedData(sourceName) {
   const products = JSON.parse(rawDataProducts);
 
   const preparedProducts = uniqWith(products, compare);
-  varSave(preparedProducts, "preparedProducts");
 
   const preparedManuals = prepareManuals(manuals, sourceName);
-  varSave(preparedManuals, "preparedManuals");
 
   return {
     products: preparedProducts,

@@ -3,7 +3,6 @@ import { router } from "./routes.js";
 import { BASE_URL, SOURCE_NAME, LABELS } from "./constants.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
-import fs from "fs";
 
 export default async function startCentralManuals() {
   log.setLevel(log.LEVELS.DEBUG);
