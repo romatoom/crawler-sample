@@ -1,5 +1,10 @@
 import { LABELS } from "../constants.js";
 
+import {
+  getCurrentProductId,
+  incrementCurrentProductId,
+} from "#utils/globals.js";
+
 export default function addHandlerStartSitemap(router) {
   router.addHandler(
     LABELS.START_SITEMAP,
@@ -28,12 +33,15 @@ export default function addHandlerStartSitemap(router) {
               label: LABELS.PRODUCT,
               userData: {
                 data: {
+                  innerId: getCurrentProductId(),
                   name: productItemElement.text().trim(),
                   category: categoryTitle,
                 },
               },
             },
           ]);
+
+          incrementCurrentProductId();
         }
       }
     }

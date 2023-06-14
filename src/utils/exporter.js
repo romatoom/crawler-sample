@@ -27,50 +27,14 @@ async function prepareSqliteDBFile(sourceName) {
   }
 }
 
-function productsManualsReferences(products, manuals, sourceName) {
-  function productNameContainsInManualTitle(product, manual) {
-    switch (sourceName) {
-      case "mi":
-        return (
-          product.name.toLowerCase() ===
-          MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
-        );
-      case "central-manuals":
-        const { productName, brand } =
-          CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manual.title);
-
-        const productNames = productName.split(" / ");
-
-        return productNames.includes(product.name) && product.brand === brand;
-      default:
-        return false;
-    }
-  }
-
-  log.info(`Prepare products-manuals references.`);
-
-  const references = [];
-
-  for (const [productIndex, product] of products.entries()) {
-    for (const [manualIndex, manual] of manuals.entries()) {
-      if (productNameContainsInManualTitle(product, manual)) {
-        references.push({
-          product_id: productIndex + 1,
-          manual_id: manualIndex + 1,
-        });
-      }
-    }
-  }
-
-  return references;
-}
-
 export default async function exportDataToSqlite(sourceName) {
   await prepareSqliteDBFile(sourceName);
 
   log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
 
-  const { products, manuals } = await getPreparedData(sourceName);
+  const { products, manuals, productsManuals } = await getPreparedData(
+    sourceName
+  );
 
   try {
     db = await open({
@@ -127,7 +91,7 @@ export default async function exportDataToSqlite(sourceName) {
           product.url,
           JSON.stringify(product.specs),
           JSON.stringify(product.images),
-          productId,
+          productId.id,
         ];
 
         await db.run(sql, values, function (err) {
@@ -178,7 +142,7 @@ export default async function exportDataToSqlite(sourceName) {
           manual.materialType,
           manual.title,
           JSON.stringify(manual.languages),
-          manualId,
+          manualId.id,
         ];
 
         await db.run(sql, values, function (err) {
@@ -205,37 +169,46 @@ export default async function exportDataToSqlite(sourceName) {
       }
     }
 
-    const dbProducts = await db.all("SELECT * FROM products", (err, rows) => {
-      if (err) {
-        return log.error(err);
-      }
-      return rows;
-    });
-
-    const dbManuals = await db.all("SELECT * FROM manuals", (err, rows) => {
-      if (err) {
-        return log.error(err);
-      }
-      return rows;
-    });
-
-    // get productsManuals references;
-    const productsManuals = productsManualsReferences(
-      dbProducts,
-      dbManuals,
-      sourceName
-    );
-
     log.info(`Export products_manuals.`);
     // Insert products_manuals to DB
     for (const productManual of productsManuals) {
+      const product = products.find(
+        (p) => p.innerId === productManual.productId
+      );
+
+      // Find product
+      sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
+
+      const productId = await db.get(
+        sql,
+        [product.brand, product.name],
+        (err, row) => {
+          if (err) {
+            return console.error(err.message);
+          }
+          return row?.id;
+        }
+      );
+
+      const manual = manuals.find((m) => m.innerId === productManual.manualId);
+
+      // Find manual
+      sql = "SELECT id FROM manuals WHERE pdf_url = ?";
+
+      const manualId = await db.get(sql, [manual.pdfUrl], (err, row) => {
+        if (err) {
+          return console.error(err.message);
+        }
+        return row?.id;
+      });
+
       sql =
         "SELECT id FROM products_manuals WHERE product_id = ? AND manual_id = ?";
 
-      // Find manual
+      // Find product_manual
       const productManualId = await db.get(
         sql,
-        [productManual.product_id, productManual.manual_id],
+        [productId.id, manualId.id],
         (err, row) => {
           if (err) {
             return console.error(err.message);
@@ -247,7 +220,7 @@ export default async function exportDataToSqlite(sourceName) {
       if (!productManualId) {
         sql = `INSERT INTO products_manuals(product_id, manual_id) VALUES (?, ?)`;
 
-        const values = [productManual.product_id, productManual.manual_id];
+        const values = [productId.id, manualId.id];
 
         await db.run(sql, values, (err) => {
           if (err) return log.error(err.message);

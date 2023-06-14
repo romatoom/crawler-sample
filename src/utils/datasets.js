@@ -6,6 +6,9 @@ export async function dropDatasets(sourceName) {
 
   const products = await Dataset.open(`${sourceName}/products`);
   await products.drop();
+
+  const productsManuals = await Dataset.open(`${sourceName}/products_manuals`);
+  await productsManuals.drop();
 }
 
 export async function exportDatasets(sourceName) {
@@ -16,4 +19,9 @@ export async function exportDatasets(sourceName) {
 
   const products = await Dataset.open(`${sourceName}/products`);
   await products.exportToJSON("OUTPUT", { toKVS: `${sourceName}/products` });
+
+  const productsManuals = await Dataset.open(`${sourceName}/products_manuals`);
+  await productsManuals.exportToJSON("OUTPUT", {
+    toKVS: `${sourceName}/products_manuals`,
+  });
 }

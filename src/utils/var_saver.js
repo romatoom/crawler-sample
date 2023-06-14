@@ -1,8 +1,8 @@
 import fs from "fs";
 
-export default function varSave(obj, filename) {
+export default function varSave(obj, filename, sourceName) {
   fs.writeFile(
-    `saved_variables/${filename}.json`,
+    `saved_variables/${sourceName}/${filename}.txt`,
     JSON.stringify(obj),
     function (err) {
       if (err) {

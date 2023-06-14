@@ -2,6 +2,13 @@ import { Dataset } from "crawlee";
 import { LABELS, BASE_URL } from "../constants.js";
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 
+import {
+  getCurrentManualId,
+  incrementCurrentManualId,
+  getCurrentProductId,
+  incrementCurrentProductId,
+} from "#utils/globals.js";
+
 export default function addHandlerManuals(router) {
   router.addHandler(LABELS.MANUALS, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
@@ -22,18 +29,20 @@ export default function addHandlerManuals(router) {
 
     const manualsResults = [];
     const productsResults = [];
+    const productsManualsResults = [];
     const productNames = new Set([]);
 
     for (const manualItem of manualsLinks) {
       const elem = $(manualItem);
       const manualHref = elem.attr("href");
-      const manualTitle = `${brand} - ${elem.text()}`.replace("\n", " ");
+      const manualTitle = elem.text().replace("\n", " ");
       const pdfUrl = `${BASE_URL}${manualHref.slice(2, manualHref.length)}`;
 
       const { productName, manualType } =
         CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manualTitle);
 
       manualsResults.push({
+        innerId: getCurrentManualId(),
         materialType: manualType,
         pdfUrl,
         title: manualTitle,
@@ -44,6 +53,7 @@ export default function addHandlerManuals(router) {
         productNames.add(productName);
 
         productsResults.push({
+          innerId: getCurrentProductId(),
           brand,
           category,
           name: productName,
@@ -51,7 +61,16 @@ export default function addHandlerManuals(router) {
           specs: [],
           images: [],
         });
+
+        productsManualsResults.push({
+          productId: getCurrentProductId(),
+          manualId: getCurrentManualId(),
+        });
+
+        incrementCurrentProductId();
       }
+
+      incrementCurrentManualId();
     }
 
     const manuals = await Dataset.open("central-manuals/manuals");
@@ -59,5 +78,10 @@ export default function addHandlerManuals(router) {
 
     const products = await Dataset.open("central-manuals/products");
     await products.pushData(productsResults);
+
+    const productsManuals = await Dataset.open(
+      "central-manuals/products_manuals"
+    );
+    await productsManuals.pushData(productsManualsResults);
   });
 }

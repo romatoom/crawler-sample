@@ -49,7 +49,6 @@ export const CENTRAL_MANUALS_FORMATTERS = {
     const MANUAL_TYPE_MAX_LENGTH = 60;
 
     const manualTitleParts = title.split(" - ").map((el) => el.trim());
-    const brand = manualTitleParts[0].trim();
     let manualType = manualTitleParts[manualTitleParts.length - 1].trim();
 
     manualType = manualType.replace("’", "'");
@@ -58,11 +57,11 @@ export const CENTRAL_MANUALS_FORMATTERS = {
     if (manualType.length >= MANUAL_TYPE_MAX_LENGTH) manualType = "Manual";
 
     const productName = manualTitleParts
-      .slice(1, manualTitleParts.length - 1)
+      .slice(0, manualTitleParts.length - 1)
       .join(" - ")
       .trim();
 
-    return { productName, manualType, brand };
+    return { productName, manualType };
   },
 
   joinTitles: (titles) => {
@@ -76,10 +75,10 @@ export const CENTRAL_MANUALS_FORMATTERS = {
       ),
     ];
 
-    const { brand, manualType } = CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(
+    const { manualType } = CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(
       titles[0]
     );
 
-    return `${brand} - ${productNames.join(" / ")} - ${manualType}`;
+    return `${productNames.join(" / ")} - ${manualType}`;
   },
 };
