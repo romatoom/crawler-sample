@@ -32,4 +32,3 @@ export default async function startMi() {
   await exportDataToSqlite(SOURCE_NAME);
 }
 
-// 3155/3154 m, 275 p, 1346pm

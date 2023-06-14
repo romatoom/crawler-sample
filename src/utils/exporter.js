@@ -27,6 +27,54 @@ async function prepareSqliteDBFile(sourceName) {
   }
 }
 
+async function findProductId(product) {
+  const sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
+
+  const findedProduct = await db.get(
+    sql,
+    [product.brand, product.name],
+    (err, row) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      return row?.id;
+    }
+  );
+
+  return findedProduct?.id;
+}
+
+async function findManualId(manual) {
+  const sql = "SELECT id FROM manuals WHERE pdf_url = ?";
+
+  // Find manual
+  const findedManual = await db.get(sql, [manual.pdfUrl], (err, row) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    return row?.id;
+  });
+
+  return findedManual?.id;
+}
+
+async function findProductManualId(productId, manualId) {
+  const sql = "SELECT id FROM products_manuals WHERE product_id = ? AND manual_id = ?";
+
+  const findedProductManual = await db.get(
+    sql,
+    [productId, manualId],
+    (err, row) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      return row?.id;
+    }
+  );
+
+  return findedProductManual?.id;
+}
+
 export default async function exportDataToSqlite(sourceName) {
   await prepareSqliteDBFile(sourceName);
 
@@ -66,19 +114,7 @@ export default async function exportDataToSqlite(sourceName) {
 
     log.info(`Export products.`);
     for (const product of products) {
-      sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
-
-      // Find product
-      const productId = await db.get(
-        sql,
-        [product.brand, product.name],
-        (err, row) => {
-          if (err) {
-            return console.error(err.message);
-          }
-          return row?.id;
-        }
-      );
+      const productId = await findProductId(product);
 
       // Update row, if product exist in DB
       if (productId) {
@@ -91,7 +127,7 @@ export default async function exportDataToSqlite(sourceName) {
           product.url,
           JSON.stringify(product.specs),
           JSON.stringify(product.images),
-          productId.id,
+          productId,
         ];
 
         await db.run(sql, values, function (err) {
@@ -123,15 +159,7 @@ export default async function exportDataToSqlite(sourceName) {
     log.info(`Export manuals.`);
     // Insert or update manuals to DB
     for (const manual of manuals) {
-      sql = "SELECT id FROM manuals WHERE pdf_url = ?";
-
-      // Find manual
-      const manualId = await db.get(sql, [manual.pdfUrl], (err, row) => {
-        if (err) {
-          return console.error(err.message);
-        }
-        return row?.id;
-      });
+      const manualId = await findManualId(manual);
 
       // Update row, if manual exist in DB
       if (manualId) {
@@ -142,7 +170,7 @@ export default async function exportDataToSqlite(sourceName) {
           manual.materialType,
           manual.title,
           JSON.stringify(manual.languages),
-          manualId.id,
+          manualId,
         ];
 
         await db.run(sql, values, function (err) {
@@ -175,52 +203,17 @@ export default async function exportDataToSqlite(sourceName) {
       const product = products.find(
         (p) => p.innerId === productManual.productId
       );
-
-      // Find product
-      sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
-
-      const productId = await db.get(
-        sql,
-        [product.brand, product.name],
-        (err, row) => {
-          if (err) {
-            return console.error(err.message);
-          }
-          return row?.id;
-        }
-      );
+      const productId = await findProductId(product);
 
       const manual = manuals.find((m) => m.innerId === productManual.manualId);
+      const manualId = await findManualId(manual);
 
-      // Find manual
-      sql = "SELECT id FROM manuals WHERE pdf_url = ?";
-
-      const manualId = await db.get(sql, [manual.pdfUrl], (err, row) => {
-        if (err) {
-          return console.error(err.message);
-        }
-        return row?.id;
-      });
-
-      sql =
-        "SELECT id FROM products_manuals WHERE product_id = ? AND manual_id = ?";
-
-      // Find product_manual
-      const productManualId = await db.get(
-        sql,
-        [productId.id, manualId.id],
-        (err, row) => {
-          if (err) {
-            return console.error(err.message);
-          }
-          return row?.id;
-        }
-      );
+      const productManualId = await findProductManualId(productId, manualId);
 
       if (!productManualId) {
         sql = `INSERT INTO products_manuals(product_id, manual_id) VALUES (?, ?)`;
 
-        const values = [productId.id, manualId.id];
+        const values = [productId, manualId];
 
         await db.run(sql, values, (err) => {
           if (err) return log.error(err.message);
