@@ -7,7 +7,14 @@ export default function addHandlerProductSpecs(router) {
 
     const specs = [];
     const specsElements = $("[data-key^=spec_]");
+    const specsElements2 = $("[data-key^=Spec_]");
+    const notesElements = $("[data-key^=note_]");
+    const overviewElements = $("[data-key^=overview_]");
+
     specsElements.each((_, spec) => specs.push($(spec).text().trim()));
+    specsElements2.each((_, spec) => specs.push($(spec).text().trim()));
+    notesElements.each((_, spec) => specs.push($(spec).text().trim()));
+    overviewElements.each((_, spec) => specs.push($(spec).text().trim()));
 
     const image = $("img");
 
@@ -16,13 +23,19 @@ export default function addHandlerProductSpecs(router) {
       imageSrc = `https:${imageSrc}`;
     }
 
+    const specText = specs.join("\n");
+
     const product = {
       ...request.userData.data,
-      specs: [
-        {
-          text_data: specs,
-        },
-      ],
+      specs:
+        specText !== ""
+          ? [
+              {
+                label: "Spec text for analysis",
+                values: specText,
+              },
+            ]
+          : [],
       images: imageSrc ? [imageSrc] : [],
     };
 

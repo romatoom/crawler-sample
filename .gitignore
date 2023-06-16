@@ -6,4 +6,4 @@ node_modules/
 storage/
 
 saved_variables/*/*.txt
-databases/*.db-
+
