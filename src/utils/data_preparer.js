@@ -34,9 +34,14 @@ function prepareManuals(manuals, sourceName) {
   switch (sourceName) {
     case "mi":
       for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const languages = manuals.map((manual) => manual.language);
+        const languages = [
+          ...new Set(manuals.map((manual) => manual.language)),
+        ];
 
-        const manual = { ...manuals[0] };
+        const manual = manuals.find((m) => m.language === "English") || {
+          ...manuals[0],
+        };
+
         delete manual.language;
         manual.languages = languages;
 
@@ -46,7 +51,9 @@ function prepareManuals(manuals, sourceName) {
       break;
     case "central-manuals":
       for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const manual = { ...manuals[0] };
+        const manual = manuals.find((m) => m.language === "English") || {
+          ...manuals[0],
+        };
 
         const languages = [
           ...new Set(manuals.map((manual) => manual.language)),
@@ -62,7 +69,27 @@ function prepareManuals(manuals, sourceName) {
 
         preparedManuals.push(manual);
 
-        manuals.slice(1).forEach((m) => {
+        manuals.forEach((m) => {
+          idsForReplace[m.innerId] = manual.innerId;
+        });
+      }
+
+      break;
+    case "sony":
+      for (const [_, manuals] of Object.entries(groupedManuals)) {
+        const manual = manuals.find((m) => m.language === "English") || {
+          ...manuals[0],
+        };
+
+        const languages = [
+          ...new Set(manuals.map((manual) => manual.language)),
+        ];
+        delete manual.language;
+        manual.languages = languages;
+
+        preparedManuals.push(manual);
+
+        manuals.forEach((m) => {
           idsForReplace[m.innerId] = manual.innerId;
         });
       }

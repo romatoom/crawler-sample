@@ -5,5 +5,5 @@ dist/
 node_modules/
 storage/
 
-saved_variables/*/*.txt
+saved_variables/*/*.json
 

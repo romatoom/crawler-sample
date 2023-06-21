@@ -32,6 +32,7 @@ export default function addHandlerManuals(router) {
     const productsManualsResults = [];
     const productNames = new Set([]);
 
+
     for (const manualItem of manualsLinks) {
       const elem = $(manualItem);
       const manualHref = elem.attr("href");
@@ -41,8 +42,11 @@ export default function addHandlerManuals(router) {
       const { productName, manualType } =
         CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manualTitle);
 
+      const currentManualId = getCurrentManualId();
+      incrementCurrentManualId();
+
       manualsResults.push({
-        innerId: getCurrentManualId(),
+        innerId: currentManualId,
         materialType: manualType,
         pdfUrl,
         title: manualTitle,
@@ -52,8 +56,11 @@ export default function addHandlerManuals(router) {
       if (!productNames.has(productName)) {
         productNames.add(productName);
 
+        const currentProductId = getCurrentProductId();
+        incrementCurrentProductId();
+
         productsResults.push({
-          innerId: getCurrentProductId(),
+          innerId: currentProductId,
           brand,
           category,
           name: productName,
@@ -63,14 +70,10 @@ export default function addHandlerManuals(router) {
         });
 
         productsManualsResults.push({
-          productId: getCurrentProductId(),
-          manualId: getCurrentManualId(),
+          productId: currentProductId,
+          manualId: currentManualId,
         });
-
-        incrementCurrentProductId();
       }
-
-      incrementCurrentManualId();
     }
 
     const manuals = await Dataset.open("central-manuals/manuals");

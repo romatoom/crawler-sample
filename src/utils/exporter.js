@@ -1,97 +1,40 @@
-import fs from "fs";
-import sqlite3 from "sqlite3";
-import { copyFile } from "node:fs/promises";
-import { open } from "sqlite";
 import { log } from "crawlee";
 import { snakeCase } from "snake-case";
 import getPreparedData from "#utils/data_preparer.js";
+import varSave from "#utils/var_saver.js";
+
 import {
-  MI_FORMATTERS,
-  CENTRAL_MANUALS_FORMATTERS,
-} from "#utils/formatters.js";
+  prepareSqliteDBFile,
+  openDatabase,
+  findProductId,
+  findManualId,
+  findProductManualId,
+} from "./database.js";
 
 log.setLevel(log.LEVELS.INFO);
 
 let sql;
 let db;
 
-async function prepareSqliteDBFile(sourceName) {
-  try {
-    const dbFilenamePath = `databases/${sourceName}.db`;
-
-    if (!fs.existsSync(dbFilenamePath)) {
-      await copyFile("databases/empty.db", dbFilenamePath);
-    }
-  } catch (err) {
-    log.error(`Error while preparing database file "${sourceName}.db":`, err);
-  }
-}
-
-async function findProductId(product) {
-  const sql = "SELECT id FROM products WHERE brand = ? AND name = ?";
-
-  const findedProduct = await db.get(
-    sql,
-    [product.brand, product.name],
-    (err, row) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      return row?.id;
-    }
-  );
-
-  return findedProduct?.id;
-}
-
-async function findManualId(manual) {
-  const sql = "SELECT id FROM manuals WHERE pdf_url = ?";
-
-  // Find manual
-  const findedManual = await db.get(sql, [manual.pdfUrl], (err, row) => {
-    if (err) {
-      return console.error(err.message);
-    }
-    return row?.id;
-  });
-
-  return findedManual?.id;
-}
-
-async function findProductManualId(productId, manualId) {
-  const sql = "SELECT id FROM products_manuals WHERE product_id = ? AND manual_id = ?";
-
-  const findedProductManual = await db.get(
-    sql,
-    [productId, manualId],
-    (err, row) => {
-      if (err) {
-        return console.error(err.message);
-      }
-      return row?.id;
-    }
-  );
-
-  return findedProductManual?.id;
-}
-
 export default async function exportDataToSqlite(sourceName) {
   await prepareSqliteDBFile(sourceName);
-
-  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
 
   const { products, manuals, productsManuals } = await getPreparedData(
     sourceName
   );
 
+  varSave(products, "products", sourceName);
+  varSave(manuals, "manuals", sourceName);
+  varSave(productsManuals, "productsManuals", sourceName);
+
   try {
-    db = await open({
-      filename: `databases/${sourceName}.db`,
-      driver: sqlite3.cached.Database,
-    });
+    db = await openDatabase(sourceName);
   } catch (err) {
-    return log.error(err.message);
+    console.log("Error opening database", err);
+    return;
   }
+
+  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
 
   const exportStatistic = {
     products: {
@@ -114,7 +57,7 @@ export default async function exportDataToSqlite(sourceName) {
 
     log.info(`Export products.`);
     for (const product of products) {
-      const productId = await findProductId(product);
+      const productId = await findProductId(db, product);
 
       // Update row, if product exist in DB
       if (productId) {
@@ -159,7 +102,7 @@ export default async function exportDataToSqlite(sourceName) {
     log.info(`Export manuals.`);
     // Insert or update manuals to DB
     for (const manual of manuals) {
-      const manualId = await findManualId(manual);
+      const manualId = await findManualId(db, manual);
 
       // Update row, if manual exist in DB
       if (manualId) {
@@ -203,12 +146,22 @@ export default async function exportDataToSqlite(sourceName) {
       const product = products.find(
         (p) => p.innerId === productManual.productId
       );
-      const productId = await findProductId(product);
+      if (!product) {
+        console.error("product id:", productManual.productId);
+      }
+      const productId = await findProductId(db, product);
 
       const manual = manuals.find((m) => m.innerId === productManual.manualId);
-      const manualId = await findManualId(manual);
+      if (!manual) {
+        console.error("manual id:", productManual.manualId);
+      }
+      const manualId = await findManualId(db, manual);
 
-      const productManualId = await findProductManualId(productId, manualId);
+      const productManualId = await findProductManualId(
+        db,
+        productId,
+        manualId
+      );
 
       if (!productManualId) {
         sql = `INSERT INTO products_manuals(product_id, manual_id) VALUES (?, ?)`;
@@ -240,8 +193,6 @@ export default async function exportDataToSqlite(sourceName) {
       }
     });
   } catch (err) {
-    log.error(err.message);
-  } finally {
-    db.close();
+    log.error(err);
   }
 }

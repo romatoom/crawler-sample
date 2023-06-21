@@ -4,7 +4,14 @@
 
 # Запуск скраппера
 
-yarn start
+yarn start source_name {only-new-products}
+
+source_name:
+mi
+central-manuals
+sony
+
+only-new-products - будут скрапиться только те продукты, которых нет в БД
 
 Сгенерированная после работы программы БД в формате SQLite будет находится в папке **databases**
 

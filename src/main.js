@@ -1,9 +1,11 @@
 import { log } from "crawlee";
 import startMi from "#sources/mi/index.js";
 import startCentralManuals from "#sources/central-manuals/index.js";
-import startProSony from "#sources/pro.sony/index.js";
+import startSony from "#sources/sony/index.js";
+import { settings } from "#utils/globals.js";
 
 const sourceName = process.argv[2];
+settings.onlyNewProducts = process.argv[3] === "only-new-products" || false;
 
 try {
   switch (sourceName) {
@@ -16,8 +18,8 @@ try {
     case "central-manuals":
       await startCentralManuals();
       break;
-    case "pro.sony":
-      await startProSony();
+    case "sony":
+      await startSony();
       break;
     default:
       log.warning(`Не найдено скрапера для "${sourceName}"`);
