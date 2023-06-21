@@ -1,7 +1,6 @@
 import { log } from "crawlee";
 import { snakeCase } from "snake-case";
 import getPreparedData from "#utils/data_preparer.js";
-import varSave from "#utils/var_saver.js";
 
 import {
   prepareSqliteDBFile,
@@ -23,14 +22,10 @@ export default async function exportDataToSqlite(sourceName) {
     sourceName
   );
 
-  varSave(products, "products", sourceName);
-  varSave(manuals, "manuals", sourceName);
-  varSave(productsManuals, "productsManuals", sourceName);
-
   try {
     db = await openDatabase(sourceName);
   } catch (err) {
-    console.log("Error opening database", err);
+    log.error("Error opening database", err);
     return;
   }
 

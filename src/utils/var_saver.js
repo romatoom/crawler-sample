@@ -1,4 +1,5 @@
 import fs from "fs";
+import { log } from "crawlee";
 
 export default function varSave(obj, filename, sourceName) {
   fs.writeFile(
@@ -6,7 +7,7 @@ export default function varSave(obj, filename, sourceName) {
     JSON.stringify(obj),
     function (err) {
       if (err) {
-        console.log(err);
+        log.error(err);
       }
     }
   );
