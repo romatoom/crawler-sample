@@ -7,3 +7,4 @@ storage/
 
 saved_variables/*/*.json
 
+test.js

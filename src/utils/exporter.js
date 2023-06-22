@@ -47,11 +47,14 @@ export default async function exportDataToSqlite(sourceName) {
     },
   };
 
+  let pproduct;
+
   try {
     // Insert or update products to DB
 
     log.info(`Export products.`);
     for (const product of products) {
+      pproduct = product;
       const productId = await findProductId(db, product);
 
       // Update row, if product exist in DB
@@ -188,6 +191,7 @@ export default async function exportDataToSqlite(sourceName) {
       }
     });
   } catch (err) {
+    log.error(pproduct.name);
     log.error(err);
   }
 }

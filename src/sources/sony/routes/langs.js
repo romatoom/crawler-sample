@@ -7,7 +7,7 @@ function compareLanguages(lang1, lang2) {
 }
 
 export default function addHandlerLangs(router) {
-  router.addHandler(LABELS.LANGS, async ({ request, crawler, $, log }) => {
+  router.addHandler(LABELS.LANGS, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 
     const langsLinks = $("a.block-link");

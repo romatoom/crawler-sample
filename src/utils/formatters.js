@@ -1,6 +1,51 @@
+import startCase from "lodash/startCase.js";
+import camelCase from "lodash/camelCase.js";
+
 export function normalizeTitle(title) {
   let normalizedTitle = title.trim().toLowerCase();
   return normalizedTitle.charAt(0).toUpperCase() + normalizedTitle.slice(1);
+}
+
+export function normalizeBrand(brand) {
+  const brandLower = brand.toLowerCase();
+  switch (brandLower) {
+    case "i-joy":
+      return "i-Joy";
+
+    case "at&t":
+      return "AT&T";
+
+    case "t-mobile":
+      return "T-Mobile";
+
+    case "regula-werk":
+    case "king":
+      return "Regula-Werk King";
+
+    case "tp-link":
+    case "neffos":
+      return "TP-Link Neffos";
+
+    case "m-audio":
+      return "Avid Technology";
+
+    case "sim-wings":
+      return "Aerosoft";
+
+    case "asahi pentax":
+    case "honeywell pentax":
+      return "Asahi Pentax / Honeywell Pentax";
+
+    case "barnes & noble":
+      return "Barnes & Noble";
+
+    case "hewlett-packard":
+    case "hp":
+      return "HP (Hewlett-Packard)";
+
+    default:
+      return startCase(camelCase(brand));
+  }
 }
 
 export const MI_FORMATTERS = {
@@ -45,14 +90,25 @@ export const MI_FORMATTERS = {
 };
 
 export const CENTRAL_MANUALS_FORMATTERS = {
-  infoByManualTitle: (title) => {
+  infoByManualTitle: (title, langCode = "EN") => {
     const MANUAL_TYPE_MAX_LENGTH = 60;
 
     const manualTitleParts = title.split(" - ").map((el) => el.trim());
     let manualType = manualTitleParts[manualTitleParts.length - 1].trim();
 
-    manualType = manualType.replace("’", "'");
-    manualType = manualType.replace("U.M.", "User Manual");
+    manualType = manualType.replaceAll("’", "'");
+
+    switch (langCode) {
+      case "EN":
+        manualType = manualType.includes("U.M.") ? "User Manual" : manualType;
+        break;
+      case "FR":
+        manualType = manualType.includes("M.E.") ? "User Manual" : "Manual";
+        break;
+      case "ES":
+        manualType = manualType.includes("M.U.") ? "User Manual" : "Manual";
+        break;
+    }
 
     if (manualType.length >= MANUAL_TYPE_MAX_LENGTH) manualType = "Manual";
 
@@ -65,7 +121,11 @@ export const CENTRAL_MANUALS_FORMATTERS = {
   },
 
   joinTitles: (titles) => {
-    const productNames = [
+    const titleInfo = titles.map((title) => {
+      return CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
+    });
+
+    /* const productNames = [
       ...new Set(
         titles.map((title) => {
           const { productName } =
@@ -75,10 +135,23 @@ export const CENTRAL_MANUALS_FORMATTERS = {
       ),
     ];
 
-    const { manualType } = CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(
-      titles[0]
-    );
+    const manualTypes = [
+      ...new Set(
+        titles.map((title) => {
+          const { manualType } =
+            CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
+          return manualType;
+        })
+      ),
+    ]; */
 
-    return `${productNames.join(" / ")} - ${manualType}`;
+    /* const { manualType } = CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(
+      titles[0],
+      langCode
+    ); */
+    const productNames = [...new Set(titleInfo.map((el) => el.productName))];
+    const manualTypes = [...new Set(titleInfo.map((el) => el.manualType))];
+
+    return `${productNames.join(" / ")} - ${manualTypes.join(" / ")}`;
   },
 };

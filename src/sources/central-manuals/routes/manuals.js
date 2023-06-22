@@ -1,4 +1,5 @@
 import { Dataset } from "crawlee";
+import * as cheerio from "cheerio";
 import { LABELS, BASE_URL } from "../constants.js";
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 
@@ -10,37 +11,92 @@ import {
 } from "#utils/globals.js";
 
 export default function addHandlerManuals(router) {
-  router.addHandler(LABELS.MANUALS, async ({ request, $, log }) => {
+  router.addHandler(LABELS.MANUALS, async ({ request, crawler, body, log }) => {
     log.debug(`request.url: ${request.url}`);
 
-    const headerHTML = $("h1").html();
-    const brand = $("h1 .cap").text().trim().replace(" - ", " / ");
-    // const lang = $("h1 span.font_size").text();
+    // Fix html body layout
+    let fixedBody = body;
+    if (
+      request.url ===
+      "https://www.central-manuales.com/guia_de_uso_instrucciones_manual_tableta/wacom.php"
+    ) {
+      fixedBody = fixedBody.replace(
+        "Bamboo FolioM.U.",
+        "Bamboo Folio - M.U.</a></li>"
+      );
+      fixedBody = fixedBody.replace(
+        "Bamboo SlateM.U.",
+        "Bamboo Slate - M.U.</a></li>"
+      );
+      fixedBody = fixedBody.replace("</a></li></a></li>", "");
+    }
 
-    // let language = "English";\n
-    // if (lang.includes("Español")) language = "Español";
-    // if (lang.includes("Français")) language = "Français";
+    const $ = cheerio.load(fixedBody);
 
-    const regexp = /<span class="cap">.+<\/span>(?<category>.+)<br>/;
-    const matches = headerHTML.match(regexp);
-    const category = matches.groups.category.replace("&amp;", "and").trim();
+    const pages = $("div.pages a[href]");
+    for (const page of pages) {
+      const elem = $(page);
 
-    const manualsLinks = $("#download_list a[href]");
+      const urlArr = request.url.split("/");
+      urlArr.pop();
+      urlArr.push(elem.attr("href"));
+      const url = `${urlArr.join("/")}`;
+
+      await crawler.addRequests([
+        {
+          url,
+          label: LABELS.MANUALS,
+          userData: {
+            data: {
+              ...request.userData.data,
+            },
+          },
+        },
+      ]);
+    }
+
+    const { langCode, category, brand } = request.userData.data;
+
+    const lang = $("h1 span.font_size").text();
+
+    let language = "English";
+    if (lang.includes("Español")) language = "Español";
+    if (lang.includes("Français")) language = "Français";
+
+    const manualsLinks = $("#download_list li > a[href]");
 
     const manualsResults = [];
     const productsResults = [];
     const productsManualsResults = [];
     const productNames = new Set([]);
 
-
     for (const manualItem of manualsLinks) {
       const elem = $(manualItem);
       const manualHref = elem.attr("href");
-      const manualTitle = elem.text().replace("\n", " ");
-      const pdfUrl = `${BASE_URL}${manualHref.slice(2, manualHref.length)}`;
+
+      let manualTitle = elem.text().replaceAll("\n", " ").trim();
+
+      // Fix manual title
+      if (!manualTitle.includes(" - ")) {
+        if (manualTitle.includes("- ")) {
+          manualTitle = manualTitle.replace("- ", " - ");
+        } else if (manualTitle.includes(" -")) {
+          manualTitle = manualTitle.replace(" -", " - ");
+        } else if (!manualTitle.includes("-")) {
+          manualTitle = `${manualTitle} - Manual`;
+        }
+      }
+
+      let priorityLanguage;
+      if (manualTitle.endsWith("(en)")) {
+        priorityLanguage = "English";
+        manualTitle = manualTitle.replace("(en)", "").trim();
+      }
+
+      const pdfUrl = `${BASE_URL[langCode]}${manualHref.slice(2)}`;
 
       const { productName, manualType } =
-        CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manualTitle);
+        CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manualTitle, langCode);
 
       const currentManualId = getCurrentManualId();
       incrementCurrentManualId();
@@ -50,7 +106,7 @@ export default function addHandlerManuals(router) {
         materialType: manualType,
         pdfUrl,
         title: manualTitle,
-        language: "English",
+        language: priorityLanguage || language,
       });
 
       if (!productNames.has(productName)) {
