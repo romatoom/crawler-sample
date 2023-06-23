@@ -3,12 +3,7 @@ import * as cheerio from "cheerio";
 import { LABELS, BASE_URL } from "../constants.js";
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 
-import {
-  getCurrentManualId,
-  incrementCurrentManualId,
-  getCurrentProductId,
-  incrementCurrentProductId,
-} from "#utils/globals.js";
+import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerManuals(router) {
   router.addHandler(LABELS.MANUALS, async ({ request, crawler, body, log }) => {
@@ -98,8 +93,7 @@ export default function addHandlerManuals(router) {
       const { productName, manualType } =
         CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(manualTitle, langCode);
 
-      const currentManualId = getCurrentManualId();
-      incrementCurrentManualId();
+      const currentManualId = manualIdGenerator.next().value;
 
       manualsResults.push({
         innerId: currentManualId,
@@ -112,8 +106,7 @@ export default function addHandlerManuals(router) {
       if (!productNames.has(productName)) {
         productNames.add(productName);
 
-        const currentProductId = getCurrentProductId();
-        incrementCurrentProductId();
+        const currentProductId = productIdGenerator.next().value;
 
         productsResults.push({
           innerId: currentProductId,

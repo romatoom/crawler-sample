@@ -3,12 +3,7 @@ import { Dataset } from "crawlee";
 import { LABELS, BASE_URL, SOURCE_NAME } from "../constants.js";
 import { langs } from "../temp_data.js";
 
-import {
-  getCurrentManualId,
-  incrementCurrentManualId,
-  getCurrentProductId,
-  incrementCurrentProductId,
-} from "#utils/globals.js";
+import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerProduct(router) {
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
@@ -64,8 +59,7 @@ export default function addHandlerProduct(router) {
       productImages.push(`https:${imageUrl}`);
     }
 
-    const currentProductId = getCurrentProductId();
-    incrementCurrentProductId();
+    const currentProductId = productIdGenerator.next().value;
 
     const productsResults = [
       {
@@ -99,8 +93,7 @@ export default function addHandlerProduct(router) {
       if (!response.data?.searchResponse?.results) continue;
 
       for (const result of response.data.searchResponse.results) {
-        const currentManualId = getCurrentManualId();
-        incrementCurrentManualId();
+        const currentManualId = manualIdGenerator.next().value;
 
         let pdfUrl = result.url.startsWith("https:")
           ? result.url

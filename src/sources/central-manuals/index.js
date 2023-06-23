@@ -52,13 +52,3 @@ export default async function startCentralManuals() {
   await exportDatasets(SOURCE_NAME);
   await exportDataToSqlite(SOURCE_NAME);
 }
-
-/*
-INFO  Inserted 32608 records to table "products".
-INFO  Inserted 45238 records to table "manuals".
-INFO  Inserted 45305 records to table "products_manuals".
-
-INFO  Inserted 53211 records to table "products".
-INFO  Inserted 71002 records to table "manuals".
-INFO  Inserted 77396 records to table "products_manuals".
-*/

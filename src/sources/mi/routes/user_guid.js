@@ -2,10 +2,7 @@ import { Dataset } from "crawlee";
 import { LABELS } from "../constants.js";
 import { MI_FORMATTERS } from "#utils/formatters.js";
 
-import {
-  getCurrentManualId,
-  incrementCurrentManualId
-} from "#utils/globals.js";
+import { manualIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerUserGuid(router) {
   router.addHandler(LABELS.USER_GUID, async ({ request, $, log }) => {
@@ -27,14 +24,12 @@ export default function addHandlerUserGuid(router) {
 
       if (title !== "" && pdfUrl.startsWith("https://")) {
         results.push({
-          innerId: getCurrentManualId(),
+          innerId: manualIdGenerator.next().value,
           materialType,
           pdfUrl,
           title,
           language: request.userData.data.language,
         });
-
-        incrementCurrentManualId();
       }
     });
 
