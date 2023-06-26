@@ -32,7 +32,7 @@ function prepareManuals(manuals, sourceName) {
   const idsForReplace = {};
 
   switch (sourceName) {
-    case "mi":
+    case "xiaomi":
       for (const [_, manuals] of Object.entries(groupedManuals)) {
         const languages = [
           ...new Set(manuals.map((manual) => manual.language)),
@@ -145,7 +145,7 @@ function prepareProductsManuals(
 function productsManualsReferences(products, manuals, sourceName) {
   function productNameContainsInManualTitle(product, manual) {
     switch (sourceName) {
-      case "mi":
+      case "xiaomi":
         return (
           product.name.toLowerCase() ===
           MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()

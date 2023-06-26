@@ -1,17 +1,30 @@
 import { CheerioCrawler, log } from "crawlee";
 import { router } from "./routes.js";
-import { BASE_URL, SOURCE_NAME, LABELS } from "./constants.js";
+import { BASE_URL, SOURCE_NAME, LABELS, BRAND } from "./constants.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import productsInfo from "./get_products_info.js";
+import { productIdGenerator } from "#utils/generators.js";
 
-// https://sgp-api.buy.mi.com/global/search/v1/api/index//0/0/0/0/0/0?version=v4&from=pc&pagesize=1000
-
-export default async function startMi() {
+export default async function startXiaomi() {
   log.setLevel(log.LEVELS.DEBUG);
   log.info(`Setting up crawler for "${BASE_URL}"`);
 
-  // const pInfo = await productsInfo();
+  const pInfo = await productsInfo();
+
+  const requests = pInfo.map((el) => ({
+    url: el.url,
+    label: LABELS.PRODUCT,
+    userData: {
+      data: {
+        innerId: productIdGenerator.next().value,
+        name: el.name,
+        category: el.category,
+        images: el.images,
+        brand: BRAND,
+      },
+    },
+  }));
 
   const crawler = new CheerioCrawler({
     requestHandler: router,
@@ -20,13 +33,10 @@ export default async function startMi() {
   log.info("Adding requests to the queue.");
 
   await crawler.addRequests([
+    ...requests,
     {
       url: `${BASE_URL}/global/support/user-guide`,
       label: LABELS.START_USER_GUIDES,
-    },
-    {
-      url: `${BASE_URL}/global/sitemap`,
-      label: LABELS.START_SITEMAP,
     },
   ]);
 
@@ -38,12 +48,5 @@ export default async function startMi() {
 }
 
 /*
-{
-    name: 'Mi Wi-Fi Range Extender Pro',
-    images: [
-      'https://i01.appmifile.com/v1/MI_18455B3E4DA706226CF7535A58E875F0267/pms_1666845177.28494169.png'
-    ],
-    url: 'https://www.mi.com/global/product/mi-wifi-range-extender-pro/',
-    category: 'Office'
-  },
+1412pm, 297p, 3177m
 */

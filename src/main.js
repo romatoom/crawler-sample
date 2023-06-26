@@ -1,5 +1,5 @@
 import { log } from "crawlee";
-import startMi from "#sources/mi/index.js";
+import startXiaomi from "#sources/xiaomi/index.js";
 import startCentralManuals from "#sources/central-manuals/index.js";
 import startSony from "#sources/sony/index.js";
 import { settings } from "#utils/globals.js";
@@ -9,8 +9,8 @@ settings.onlyNewProducts = process.argv[3] === "only-new-products" || false;
 
 try {
   switch (sourceName) {
-    case "mi":
-      await startMi();
+    case "xiaomi":
+      await startXiaomi();
       break;
     /* case "manualslib":
       await startManualsLib();

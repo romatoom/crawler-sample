@@ -7,7 +7,7 @@
 yarn start source_name {only-new-products}
 
 source_name:
-mi
+xiaomi
 central-manuals
 sony
 

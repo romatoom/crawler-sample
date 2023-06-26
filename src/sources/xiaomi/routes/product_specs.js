@@ -1,5 +1,5 @@
 import { Dataset } from "crawlee";
-import { LABELS } from "../constants.js";
+import { LABELS, SOURCE_NAME } from "../constants.js";
 
 export default function addHandlerProductSpecs(router) {
   router.addHandler(LABELS.PRODUCT_SPECS, async ({ request, $, log }) => {
@@ -16,13 +16,6 @@ export default function addHandlerProductSpecs(router) {
     notesElements.each((_, spec) => specs.push($(spec).text().trim()));
     overviewElements.each((_, spec) => specs.push($(spec).text().trim()));
 
-    const image = $("img");
-
-    let imageSrc = image.length > 0 ? image.first().attr("data-src") : null;
-    if (imageSrc && !imageSrc.startsWith("https:")) {
-      imageSrc = `https:${imageSrc}`;
-    }
-
     const specText = specs.join("\n");
 
     const product = {
@@ -36,10 +29,9 @@ export default function addHandlerProductSpecs(router) {
               },
             ]
           : [],
-      images: imageSrc ? [imageSrc] : [],
     };
 
-    const productsDataset = await Dataset.open("mi/products");
+    const productsDataset = await Dataset.open(`${SOURCE_NAME}/products`);
     await productsDataset.pushData(product);
   });
 }

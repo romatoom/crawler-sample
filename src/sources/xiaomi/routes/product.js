@@ -1,11 +1,9 @@
 import { Dataset } from "crawlee";
-import { LABELS } from "../constants.js";
+import { LABELS, SOURCE_NAME } from "../constants.js";
 
 export default function addHandlerProduct(router) {
   router.addHandler(LABELS.PRODUCT, async ({ request, crawler, $, log }) => {
     log.debug(`request.url: ${request.url}`);
-
-    const BRAND = "Xiaomi";
 
     let specLink = $("a#nav-specs[href]");
 
@@ -22,7 +20,6 @@ export default function addHandlerProduct(router) {
           userData: {
             data: {
               ...request.userData.data,
-              brand: BRAND,
               url: request.url,
             },
           },
@@ -31,13 +28,11 @@ export default function addHandlerProduct(router) {
     } else {
       const product = {
         ...request.userData.data,
-        brand: BRAND,
         url: request.url,
         specs: [],
-        images: [],
       };
 
-      const productsDataset = await Dataset.open("mi/products");
+      const productsDataset = await Dataset.open(`${SOURCE_NAME}/products`);
       await productsDataset.pushData(product);
     }
   });
