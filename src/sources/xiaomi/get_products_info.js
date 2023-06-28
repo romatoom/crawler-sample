@@ -2,12 +2,6 @@ import axios from "axios";
 
 const PAGE_SIZE = 100;
 
-/*
-"total_count": 296,
-      "current_page": 0,
-      "total_pages": 3,
-*/
-
 async function getCategories() {
   const API_URL = `https://sgp-api.buy.mi.com/global/search/v1/api/index//0/0/0/0/0/0?version=v4&from=pc&pagesize=24`;
   const response = await axios.get(API_URL);

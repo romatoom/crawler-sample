@@ -1,3 +1,5 @@
+import clone from "clone";
+
 import startCase from "lodash/startCase.js";
 import camelCase from "lodash/camelCase.js";
 
@@ -125,33 +127,62 @@ export const CENTRAL_MANUALS_FORMATTERS = {
       return CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
     });
 
-    /* const productNames = [
-      ...new Set(
-        titles.map((title) => {
-          const { productName } =
-            CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
-          return productName;
-        })
-      ),
-    ];
-
-    const manualTypes = [
-      ...new Set(
-        titles.map((title) => {
-          const { manualType } =
-            CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
-          return manualType;
-        })
-      ),
-    ]; */
-
-    /* const { manualType } = CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(
-      titles[0],
-      langCode
-    ); */
     const productNames = [...new Set(titleInfo.map((el) => el.productName))];
     const manualTypes = [...new Set(titleInfo.map((el) => el.manualType))];
 
     return `${productNames.join(" / ")} - ${manualTypes.join(" / ")}`;
+  },
+};
+
+export const INSTRUMART_FORMATTERS = {
+  joinTitles: (titles) => {
+    let joinedLeftTitlesArray = [];
+    let joinedRightTitlesArray = [];
+
+    const titlesArray = titles.map((el) => el.split(" "));
+    let titlesArrayModified = clone(titlesArray);
+
+    const arrOfLength = titlesArray.map((el) => el.length);
+    const minLength = arrOfLength.reduce((a, b) => Math.min(a, b), Infinity);
+
+    for (let count = 0; count < minLength; count++) {
+      const titlePart = titlesArray[0][count];
+
+      if (titlesArray.every((el) => el[count] === titlePart)) {
+        joinedLeftTitlesArray.push(titlePart);
+        titlesArrayModified.forEach((el) => {
+          el.shift();
+        });
+      } else {
+        break;
+      }
+    }
+
+    for (let count = 0; count < minLength; count++) {
+      const titlePart = titlesArray[0][titlesArray[0].length - 1 - count];
+
+      if (titlesArray.every((el) => el[el.length - 1 - count] === titlePart)) {
+        joinedRightTitlesArray.unshift(titlePart);
+        titlesArrayModified.forEach((el) => {
+          el.pop();
+        });
+      } else {
+        break;
+      }
+    }
+
+    titlesArrayModified = titlesArrayModified.map((el) =>
+      el.filter((el) => el.trim() !== "/").join(" ")
+    );
+    titlesArrayModified = titlesArrayModified.filter((el) => el.trim() !== "");
+
+    const titlesArrayCenter =
+      joinedLeftTitlesArray.length > 0 || joinedRightTitlesArray > 0
+        ? `[ ${titlesArrayModified.join(" / ")} ]`
+        : `${titlesArrayModified.join(" / ")}`;
+
+    return `${joinedLeftTitlesArray.join(
+      " "
+    )} ${titlesArrayCenter} ${joinedRightTitlesArray.join(" ")}`.trim();
   },
 };

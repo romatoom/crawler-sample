@@ -4,10 +4,8 @@ import { normalizeTitle } from "#utils/formatters.js";
 export default function addHandlerStartUserGuides(router) {
   router.addHandler(
     LABELS.START_USER_GUIDES,
-    async ({ request, crawler, $, log, proxyInfo }) => {
+    async ({ request, crawler, $, log }) => {
       log.debug(`request.url: ${request.url}`);
-      /* const usedProxyUrl = proxyInfo.url;
-      log.debug(`usedProxyUrl: ${usedProxyUrl}`); */
 
       const userGidLinks = $(".mi-tabs-pane__item div > a[href]");
 

@@ -46,7 +46,3 @@ export default async function startXiaomi() {
   await exportDatasets(SOURCE_NAME);
   await exportDataToSqlite(SOURCE_NAME);
 }
-
-/*
-1412pm, 297p, 3177m
-*/

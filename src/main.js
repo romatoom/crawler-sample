@@ -1,7 +1,10 @@
 import { log } from "crawlee";
+
 import startXiaomi from "#sources/xiaomi/index.js";
 import startCentralManuals from "#sources/central-manuals/index.js";
 import startSony from "#sources/sony/index.js";
+import startInstrumart from "#sources/instrumart/index.js";
+
 import { settings } from "#utils/globals.js";
 
 const sourceName = process.argv[2];
@@ -20,6 +23,9 @@ try {
       break;
     case "sony":
       await startSony();
+      break;
+    case "instrumart":
+      await startInstrumart();
       break;
     default:
       log.warning(`Не найдено скрапера для "${sourceName}"`);

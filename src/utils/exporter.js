@@ -55,12 +55,13 @@ export default async function exportDataToSqlite(sourceName) {
     log.info(`Export products.`);
     for (const product of products) {
       pproduct = product;
+      const metadata = product.metadata || {};
       const productId = await findProductId(db, product);
 
       // Update row, if product exist in DB
       if (productId) {
         sql =
-          "UPDATE products SET brand = ?, category = ?, url = ?, specs = json(?), images = json(?) WHERE id = ?";
+          "UPDATE products SET brand = ?, category = ?, url = ?, specs = json(?), images = json(?), metadata = json(?) WHERE id = ?";
 
         const values = [
           product.brand,
@@ -68,6 +69,7 @@ export default async function exportDataToSqlite(sourceName) {
           product.url,
           JSON.stringify(product.specs),
           JSON.stringify(product.images),
+          JSON.stringify(metadata),
           productId,
         ];
 
@@ -78,7 +80,7 @@ export default async function exportDataToSqlite(sourceName) {
         exportStatistic.products.updatedCount++;
       } else {
         // Insert row, if product not exist in DB
-        sql = `INSERT INTO products(brand, category, name, url, specs, images) VALUES (?, ?, ?, ?, json(?), json(?))`;
+        sql = `INSERT INTO products(brand, category, name, url, specs, images, metadata) VALUES (?, ?, ?, ?, json(?), json(?), json(?))`;
 
         const values = [
           product.brand,
@@ -87,6 +89,7 @@ export default async function exportDataToSqlite(sourceName) {
           product.url,
           JSON.stringify(product.specs),
           JSON.stringify(product.images),
+          JSON.stringify(metadata),
         ];
 
         await db.run(sql, values, (err) => {
@@ -102,15 +105,18 @@ export default async function exportDataToSqlite(sourceName) {
     for (const manual of manuals) {
       const manualId = await findManualId(db, manual);
 
+      const metadata = manual.metadata || {};
+
       // Update row, if manual exist in DB
       if (manualId) {
         sql =
-          "UPDATE manuals SET material_type = ?, title = ?, languages = json(?) WHERE id = ?";
+          "UPDATE manuals SET material_type = ?, title = ?, languages = json(?), metadata = json(?) WHERE id = ?";
 
         const values = [
           manual.materialType,
           manual.title,
           JSON.stringify(manual.languages),
+          JSON.stringify(metadata),
           manualId,
         ];
 
@@ -121,13 +127,14 @@ export default async function exportDataToSqlite(sourceName) {
         exportStatistic.manuals.updatedCount++;
       } else {
         // Insert row, if maniual not exist in DB
-        sql = `INSERT INTO manuals(material_type, pdf_url, title, languages) VALUES (?, ?, ?, json(?))`;
+        sql = `INSERT INTO manuals(material_type, pdf_url, title, languages, metadata) VALUES (?, ?, ?, json(?), json(?))`;
 
         const values = [
           manual.materialType,
           manual.pdfUrl,
           manual.title,
           JSON.stringify(manual.languages),
+          JSON.stringify(metadata),
         ];
 
         await db.run(sql, values, (err) => {

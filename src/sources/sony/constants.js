@@ -7,5 +7,3 @@ export const LABELS = {
   PRODUCTS_LIST: "PRODUCTS_LIST",
   PRODUCT: "PRODUCT",
 };
-
-// export const PRODUCTS_LIMIT = 1;

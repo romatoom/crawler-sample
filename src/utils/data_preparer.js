@@ -4,7 +4,7 @@ import uniqWith from "lodash/uniqWith.js";
 
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 import { SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET } from "#utils/globals.js";
-import { MI_FORMATTERS } from "#utils/formatters.js";
+import { MI_FORMATTERS, INSTRUMART_FORMATTERS } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
 
@@ -94,6 +94,31 @@ function prepareManuals(manuals, sourceName) {
         });
       }
 
+      break;
+    case "instrumart":
+      for (const [_, manuals] of Object.entries(groupedManuals)) {
+        const manual = manuals.find((m) => m.language === "English") || {
+          ...manuals[0],
+        };
+
+        const languages = [
+          ...new Set(manuals.map((manual) => manual.language)),
+        ];
+        delete manual.language;
+        manual.languages = languages;
+
+        const titles = [...new Set(manuals.map((manual) => manual.title))];
+        manual.title =
+          titles.length > 1
+            ? INSTRUMART_FORMATTERS.joinTitles(titles)
+            : titles[0];
+
+        preparedManuals.push(manual);
+
+        manuals.forEach((m) => {
+          idsForReplace[m.innerId] = manual.innerId;
+        });
+      }
       break;
     default:
       preparedManuals = [...manuals];

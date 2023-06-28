@@ -14,6 +14,3 @@ sony
 only-new-products - будут скрапиться только те продукты, которых нет в БД
 
 Сгенерированная после работы программы БД в формате SQLite будет находится в папке **databases**
-
-// TODO: https://www.instrumart.com/
-// cenral-manuals (FR, ES)
