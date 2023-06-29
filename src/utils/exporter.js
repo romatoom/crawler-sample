@@ -15,21 +15,19 @@ log.setLevel(log.LEVELS.INFO);
 let sql;
 let db;
 
-export default async function exportDataToSqlite(sourceName) {
-  await prepareSqliteDBFile(sourceName);
+export default async function exportDataToSqlite(source) {
+  await prepareSqliteDBFile(source);
 
-  const { products, manuals, productsManuals } = await getPreparedData(
-    sourceName
-  );
+  const { products, manuals, productsManuals } = await getPreparedData(source);
 
   try {
-    db = await openDatabase(sourceName);
+    db = await openDatabase(source);
   } catch (err) {
     log.error("Error opening database", err);
     return;
   }
 
-  log.info(`Start exporting data to SQLite ("${sourceName}.db").`);
+  log.info(`Start exporting data to SQLite ("${source.name}.db").`);
 
   const exportStatistic = {
     products: {

@@ -62,6 +62,8 @@ export default function addHandlerProductsList(router) {
             },
           },
         ]);
+
+        if (settings.testMode) break;
       }
     }
   );

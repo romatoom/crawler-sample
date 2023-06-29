@@ -1,4 +1,5 @@
 import { LABELS, BASE_URL } from "../constants.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerCategories(router) {
   router.addHandler(LABELS.CATEGORIES, async ({ request, $, log, crawler }) => {
@@ -23,6 +24,8 @@ export default function addHandlerCategories(router) {
           },
         },
       ]);
+
+      if (settings.testMode) break;
     }
   });
 }

@@ -1,9 +1,10 @@
 import { Dataset } from "crawlee";
-import { LABELS, SOURCE_NAME, BASE_URL } from "../constants.js";
-import {
-  productIdGenerator,
-  manualIdGenerator
-} from "#utils/generators.js";
+import { LABELS, SOURCE, BASE_URL } from "../constants.js";
+import { settings } from "#utils/globals.js";
+
+import varSave from "../../../utils/var_saver.js";
+
+import { productIdGenerator, manualIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerProduct(router) {
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
@@ -88,14 +89,16 @@ export default function addHandlerProduct(router) {
       },
     ];
 
-    const manuals = await Dataset.open(`${SOURCE_NAME}/manuals`);
+    varSave(productsResults, "productResults", SOURCE);
+
+    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
     await manuals.pushData(manualsResults);
 
-    const products = await Dataset.open(`${SOURCE_NAME}/products`);
+    const products = await Dataset.open(`${SOURCE.name}/products`);
     await products.pushData(productsResults);
 
     const productsManuals = await Dataset.open(
-      `${SOURCE_NAME}/products_manuals`
+      `${SOURCE.name}/products_manuals`
     );
     await productsManuals.pushData(productsManualsResults);
   });

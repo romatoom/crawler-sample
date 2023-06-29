@@ -1,5 +1,5 @@
 import { Dataset } from "crawlee";
-import { LABELS, SOURCE_NAME } from "../constants.js";
+import { LABELS, SOURCE } from "../constants.js";
 
 export default function addHandlerProductSpecs(router) {
   router.addHandler(LABELS.PRODUCT_SPECS, async ({ request, $, log }) => {
@@ -31,7 +31,7 @@ export default function addHandlerProductSpecs(router) {
           : [],
     };
 
-    const productsDataset = await Dataset.open(`${SOURCE_NAME}/products`);
+    const productsDataset = await Dataset.open(`${SOURCE.name}/products`);
     await productsDataset.pushData(product);
   });
 }

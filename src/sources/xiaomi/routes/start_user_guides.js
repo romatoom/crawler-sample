@@ -1,5 +1,6 @@
 import { LABELS } from "../constants.js";
 import { normalizeTitle } from "#utils/formatters.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerStartUserGuides(router) {
   router.addHandler(
@@ -25,6 +26,8 @@ export default function addHandlerStartUserGuides(router) {
             },
           },
         ]);
+
+        if (settings.testMode) break;
       }
     }
   );

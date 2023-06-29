@@ -1,6 +1,7 @@
 import { Dataset } from "crawlee";
-import { LABELS, SOURCE_NAME } from "../constants.js";
+import { LABELS, SOURCE } from "../constants.js";
 import { MI_FORMATTERS } from "#utils/formatters.js";
+import { settings } from "#utils/globals.js";
 
 import { manualIdGenerator } from "#utils/generators.js";
 
@@ -31,9 +32,11 @@ export default function addHandlerUserGuid(router) {
           language: request.userData.data.language,
         });
       }
+
+      if (settings.testMode) return 0;
     });
 
-    const manuals = await Dataset.open(`${SOURCE_NAME}/manuals`);
+    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
     await manuals.pushData(results);
   });
 }

@@ -1,5 +1,6 @@
 import { LABELS, BASE_URL } from "../constants.js";
 import { normalizeBrand } from "#utils/formatters.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerCategory(router) {
   router.addHandler(LABELS.CATEGORY, async ({ request, crawler, $, log }) => {
@@ -33,6 +34,8 @@ export default function addHandlerCategory(router) {
           },
         },
       ]);
+
+      if (settings.testMode) break;
     }
   });
 }

@@ -1,5 +1,7 @@
+import { SOURCES } from "#utils/globals.js";
+
 export const BASE_URL = "https://www.mi.com";
-export const SOURCE_NAME = "xiaomi";
+export const SOURCE = SOURCES.XIAOMI;
 export const BRAND = "Xiaomi";
 
 export const LABELS = {

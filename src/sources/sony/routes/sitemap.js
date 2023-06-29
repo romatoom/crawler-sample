@@ -1,4 +1,5 @@
 import { LABELS, BASE_URL } from "../constants.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerSitemap(router) {
   router.addHandler(LABELS.SITEMAP, async ({ request, $, log, crawler }) => {
@@ -35,6 +36,8 @@ export default function addHandlerSitemap(router) {
             ]);
           }
         }
+
+        if (settings.testMode) break;
       }
     }
   });

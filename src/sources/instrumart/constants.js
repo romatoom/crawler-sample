@@ -1,5 +1,7 @@
+import { SOURCES } from "#utils/globals.js";
+
 export const BASE_URL = "https://www.instrumart.com";
-export const SOURCE_NAME = "instrumart";
+export const SOURCE = SOURCES.INSTRUMART;
 
 export const LABELS = {
   CATEGORIES: "CATEGORIES",

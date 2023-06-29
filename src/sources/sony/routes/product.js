@@ -1,7 +1,8 @@
 import axios from "axios";
 import { Dataset } from "crawlee";
-import { LABELS, BASE_URL, SOURCE_NAME } from "../constants.js";
+import { LABELS, BASE_URL, SOURCE } from "../constants.js";
 import { langs } from "../temp_data.js";
+import { settings } from "#utils/globals.js";
 
 import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
@@ -120,6 +121,8 @@ export default function addHandlerProduct(router) {
           productId: currentProductId,
           manualId: currentManualId,
         });
+
+        if (settings.testMode) break;
       }
     }
 
@@ -130,14 +133,14 @@ export default function addHandlerProduct(router) {
     )
       return;
 
-    const manuals = await Dataset.open(`${SOURCE_NAME}/manuals`);
+    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
     await manuals.pushData(manualsResults);
 
-    const products = await Dataset.open(`${SOURCE_NAME}/products`);
+    const products = await Dataset.open(`${SOURCE.name}/products`);
     await products.pushData(productsResults);
 
     const productsManuals = await Dataset.open(
-      `${SOURCE_NAME}/products_manuals`
+      `${SOURCE.name}/products_manuals`
     );
     await productsManuals.pushData(productsManualsResults);
   });

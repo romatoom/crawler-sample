@@ -1,4 +1,5 @@
 import { LABELS, BASE_URL } from "../constants.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerProductsList(router) {
   router.addHandler(
@@ -36,6 +37,8 @@ export default function addHandlerProductsList(router) {
             },
           },
         ]);
+
+        if (settings.testMode) break;
       }
     }
   );

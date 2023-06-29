@@ -4,23 +4,23 @@ import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 import { log } from "crawlee";
 
-export async function prepareSqliteDBFile(sourceName) {
+export async function prepareSqliteDBFile(source) {
   try {
-    const dbFilenamePath = `databases/${sourceName}.db`;
+    const dbFilenamePath = `databases/${source.name}.db`;
 
     if (!fs.existsSync(dbFilenamePath)) {
       await copyFile("databases/empty.db", dbFilenamePath);
     }
   } catch (err) {
-    log.error(`Error while preparing database file "${sourceName}.db":`, err);
+    log.error(`Error while preparing database file "${source.name}.db":`, err);
   }
 }
 
-export async function openDatabase(sourceName) {
-  log.info(`Open database ("${sourceName}.db")!`);
+export async function openDatabase(source) {
+  log.info(`Open database ("${source.name}.db")!`);
 
   const db = await open({
-    filename: `databases/${sourceName}.db`,
+    filename: `databases/${source.name}.db`,
     driver: sqlite3.cached.Database,
   });
 
@@ -76,8 +76,8 @@ export async function findProductManualId(db, productId, manualId) {
   return findedProductManual?.id;
 }
 
-export async function readProducts(sourceName) {
-  const db = await openDatabase(sourceName);
+export async function readProducts(source) {
+  const db = await openDatabase(source);
 
   const dbProducts = await db.all("SELECT * FROM products", (err, rows) => {
     if (err) {
