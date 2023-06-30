@@ -1,7 +1,7 @@
-import { LABELS, BASE_URL } from "../constants.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerProductsList(router) {
+  const { LABELS, BASE_URL } = settings.source;
   router.addHandler(
     LABELS.PRODUCTS_LIST,
     async ({ request, $, log, crawler }) => {

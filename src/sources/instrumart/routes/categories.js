@@ -1,7 +1,10 @@
-import { LABELS, BASE_URL } from "../constants.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerCategories(router) {
+  const {
+    LABELS, BASE_URL
+  } = settings.source;
+
   router.addHandler(LABELS.CATEGORIES, async ({ request, $, log, crawler }) => {
     log.debug(`request.url: ${request.url}`);
 

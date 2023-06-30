@@ -1,15 +1,17 @@
-import { SOURCES } from "#utils/globals.js";
+const CENTRAL_MANUALS = {
+  ORIGINAL_NAME: "central-manuals",
 
-export const BASE_URL = {
-  EN: "https://www.central-manuals.com",
-  FR: "https://www.central-manuels.com",
-  ES: "https://www.central-manuales.com",
+  BASE_URL: {
+    EN: "https://www.central-manuals.com",
+    FR: "https://www.central-manuels.com",
+    ES: "https://www.central-manuales.com",
+  },
+
+  LABELS: {
+    START: "START",
+    CATEGORY: "CATEGORY",
+    MANUALS: "MANUALS",
+  },
 };
 
-export const SOURCE = SOURCES.CENTRAL_MANUALS;
-
-export const LABELS = {
-  START: "START",
-  CATEGORY: "CATEGORY",
-  MANUALS: "MANUALS",
-};
+export default CENTRAL_MANUALS;

@@ -6,7 +6,10 @@ import addHandlerProduct from "./routes/product.js";
 
 export const router = Router.create();
 
+export function addRouterHandlers() {
 addHandlerLangs(router);
 addHandlerSitemap(router);
 addHandlerProductsList(router);
 addHandlerProduct(router);
+}
+

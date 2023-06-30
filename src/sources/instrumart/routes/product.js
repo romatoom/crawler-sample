@@ -1,18 +1,15 @@
 import { Dataset } from "crawlee";
-import { LABELS, SOURCE, BASE_URL } from "../constants.js";
-import { settings } from "#utils/globals.js";
 
-import varSave from "../../../utils/var_saver.js";
+import varSave from "#utils/var_saver.js";
 
 import { productIdGenerator, manualIdGenerator } from "#utils/generators.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerProduct(router) {
+  const { LABELS, BASE_URL, currentName } = settings.source;
+
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
-
-    const check =
-      request.url ===
-      "https://www.instrumart.com/products/38242/aemc-5233-trms-digital-multimeter";
 
     const { category, name, description, images } = request.userData.data;
 
@@ -89,16 +86,16 @@ export default function addHandlerProduct(router) {
       },
     ];
 
-    varSave(productsResults, "productResults", SOURCE);
+    varSave(productsResults, "productResults", settings.source);
 
-    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
+    const manuals = await Dataset.open(`${currentName}/manuals`);
     await manuals.pushData(manualsResults);
 
-    const products = await Dataset.open(`${SOURCE.name}/products`);
+    const products = await Dataset.open(`${currentName}/products`);
     await products.pushData(productsResults);
 
     const productsManuals = await Dataset.open(
-      `${SOURCE.name}/products_manuals`
+      `${currentName}/products_manuals`
     );
     await productsManuals.pushData(productsManualsResults);
   });

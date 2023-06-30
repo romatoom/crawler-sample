@@ -1,14 +1,20 @@
 import { CheerioCrawler, log } from "crawlee";
-import { router } from "./routes.js";
-import { BASE_URL, SOURCE, LABELS } from "./constants.js";
+import { router, addRouterHandlers } from "./routes.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
+import { settings } from "#utils/globals.js"
 
 export default async function startCentralManuals() {
+  const {
+    BASE_URL, LABELS
+  } = settings.source
+
   log.setLevel(log.LEVELS.DEBUG);
   log.info(
     `Setting up crawler for "${BASE_URL.EN}", "${BASE_URL.ES}", "${BASE_URL.FR}"`
   );
+
+  addRouterHandlers();
 
   const crawler = new CheerioCrawler({
     requestHandler: router,
@@ -46,9 +52,9 @@ export default async function startCentralManuals() {
     },
   ]);
 
-  await dropDatasets(SOURCE);
+  await dropDatasets();
   await crawler.run();
 
-  await exportDatasets(SOURCE);
-  await exportDataToSqlite(SOURCE);
+  await exportDatasets();
+  await exportDataToSqlite();
 }

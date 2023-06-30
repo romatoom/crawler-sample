@@ -1,12 +1,13 @@
 import { Dataset } from "crawlee";
 import * as cheerio from "cheerio";
-import { LABELS, BASE_URL, SOURCE } from "../constants.js";
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 import { settings } from "#utils/globals.js";
 
 import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerManuals(router) {
+  const { LABELS, BASE_URL, currentName } = settings.source;
+
   router.addHandler(LABELS.MANUALS, async ({ request, crawler, body, log }) => {
     log.debug(`request.url: ${request.url}`);
 
@@ -128,14 +129,14 @@ export default function addHandlerManuals(router) {
       }
     }
 
-    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
+    const manuals = await Dataset.open(`${currentName}/manuals`);
     await manuals.pushData(manualsResults);
 
-    const products = await Dataset.open(`${SOURCE.name}/products`);
+    const products = await Dataset.open(`${currentName}/products`);
     await products.pushData(productsResults);
 
     const productsManuals = await Dataset.open(
-      `${SOURCE.name}/products_manuals`
+      `${currentName}/products_manuals`
     );
     await productsManuals.pushData(productsManualsResults);
   });

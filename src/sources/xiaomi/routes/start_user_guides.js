@@ -1,11 +1,14 @@
-import { LABELS } from "../constants.js";
 import { normalizeTitle } from "#utils/formatters.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerStartUserGuides(router) {
+  const { LABELS } = settings.source;
+
   router.addHandler(
     LABELS.START_USER_GUIDES,
     async ({ request, crawler, $, log }) => {
+      console.log(settings);
+
       log.debug(`request.url: ${request.url}`);
 
       const userGidLinks = $(".mi-tabs-pane__item div > a[href]");

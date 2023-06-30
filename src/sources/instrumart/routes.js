@@ -5,6 +5,8 @@ import addHandlerProduct from "./routes/product.js";
 
 export const router = Router.create();
 
-addHandlerCategories(router);
-addHandlerProductsList(router);
-addHandlerProduct(router);
+export function addRouterHandlers() {
+  addHandlerCategories(router);
+  addHandlerProductsList(router);
+  addHandlerProduct(router);
+}

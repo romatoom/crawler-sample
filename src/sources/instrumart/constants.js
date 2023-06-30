@@ -1,10 +1,12 @@
-import { SOURCES } from "#utils/globals.js";
+const INSTRUMART = {
+  ORIGINAL_NAME: "instrumart",
+  BASE_URL: "https://www.instrumart.com",
 
-export const BASE_URL = "https://www.instrumart.com";
-export const SOURCE = SOURCES.INSTRUMART;
-
-export const LABELS = {
-  CATEGORIES: "CATEGORIES",
-  PRODUCTS_LIST: "PRODUCTS_LIST",
-  PRODUCT: "PRODUCT",
+  LABELS: {
+    CATEGORIES: "CATEGORIES",
+    PRODUCTS_LIST: "PRODUCTS_LIST",
+    PRODUCT: "PRODUCT",
+  },
 };
+
+export default INSTRUMART;

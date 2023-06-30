@@ -1,6 +1,7 @@
 import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
+import { settings } from "#utils/globals.js";
 
 import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 import {
@@ -29,7 +30,7 @@ function compareProductManuals(productManual1, productManual2) {
   );
 }
 
-function prepareManuals(manuals, source) {
+function prepareManuals(manuals, source = settings.source) {
   const groupedManuals = manuals.groupBy((manual) => manual.pdfUrl);
 
   let preparedManuals = [];
@@ -70,99 +71,6 @@ function prepareManuals(manuals, source) {
       });
     }
   }
-
-  /* switch (sourceName) {
-    case "xiaomi":
-      for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const manual = manuals.find((m) => m.language === "English") || {
-          ...manuals[0],
-        };
-
-        const languages = [
-          ...new Set(manuals.map((manual) => manual.language)),
-        ];
-        delete manual.language;
-        manual.languages = languages;
-
-        preparedManuals.push(manual);
-      }
-
-      break;
-    case "central-manuals":
-      for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const manual = manuals.find((m) => m.language === "English") || {
-          ...manuals[0],
-        };
-
-        const languages = [
-          ...new Set(manuals.map((manual) => manual.language)),
-        ];
-        delete manual.language;
-        manual.languages = languages;
-
-        const titles = [...new Set(manuals.map((manual) => manual.title))];
-        manual.title =
-          titles.length === 1
-            ? titles[0]
-            : CENTRAL_MANUALS_FORMATTERS.joinTitles(titles);
-
-        preparedManuals.push(manual);
-
-        manuals.forEach((m) => {
-          idsForReplace[m.innerId] = manual.innerId;
-        });
-      }
-
-      break;
-    case "sony":
-      for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const manual = manuals.find((m) => m.language === "English") || {
-          ...manuals[0],
-        };
-
-        const languages = [
-          ...new Set(manuals.map((manual) => manual.language)),
-        ];
-        delete manual.language;
-        manual.languages = languages;
-
-        preparedManuals.push(manual);
-
-        manuals.forEach((m) => {
-          idsForReplace[m.innerId] = manual.innerId;
-        });
-      }
-
-      break;
-    case "instrumart":
-      for (const [_, manuals] of Object.entries(groupedManuals)) {
-        const manual = manuals.find((m) => m.language === "English") || {
-          ...manuals[0],
-        };
-
-        const languages = [
-          ...new Set(manuals.map((manual) => manual.language)),
-        ];
-        delete manual.language;
-        manual.languages = languages;
-
-        const titles = [...new Set(manuals.map((manual) => manual.title))];
-        manual.title =
-          titles.length > 1
-            ? INSTRUMART_FORMATTERS.joinTitles(titles)
-            : titles[0];
-
-        preparedManuals.push(manual);
-
-        manuals.forEach((m) => {
-          idsForReplace[m.innerId] = manual.innerId;
-        });
-      }
-      break;
-    default:
-      preparedManuals = [...manuals];
-      break;
-  } */
 
   return { preparedManuals, idsForReplace };
 }
@@ -206,7 +114,11 @@ function prepareProductsManuals(
   return uniqWith(preparedProductsManuals, compareProductManuals);
 }
 
-function productsManualsReferences(products, manuals, source) {
+function productsManualsReferences(
+  products,
+  manuals,
+  source = settings.source
+) {
   function productNameContainsInManualTitle(product, manual) {
     switch (source) {
       case SOURCES.XIAOMI:
@@ -238,32 +150,31 @@ function productsManualsReferences(products, manuals, source) {
   return references;
 }
 
-export default async function getPreparedData(source) {
+export default async function getPreparedData(source = settings.source) {
   log.info("Prepare and receive data.");
 
-  const rawDataManuals = fs.readFileSync(pathOfEntity(source, "manuals"));
+  const rawDataManuals = fs.readFileSync(pathOfEntity("manuals"));
   const manuals = JSON.parse(rawDataManuals);
 
-  const rawDataProducts = fs.readFileSync(pathOfEntity(source, "products"));
+  const rawDataProducts = fs.readFileSync(pathOfEntity("products"));
   const products = JSON.parse(rawDataProducts);
 
   const { preparedProducts, idsForReplace: productsIdsForReplace } =
     prepareProducts(products);
 
   const { preparedManuals, idsForReplace: manualsIdsForReplace } =
-    prepareManuals(manuals, source);
+    prepareManuals(manuals);
 
   let preparedProductsManuals = [];
 
   if (SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source)) {
     preparedProductsManuals = productsManualsReferences(
       preparedProducts,
-      preparedManuals,
-      source
+      preparedManuals
     );
   } else {
     const rawDataProductsManuals = fs.readFileSync(
-      pathOfEntity(source, "products_manuals")
+      pathOfEntity("products_manuals")
     );
 
     const productsManuals = JSON.parse(rawDataProductsManuals);

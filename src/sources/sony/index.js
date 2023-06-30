@@ -1,6 +1,5 @@
 import { CheerioCrawler, log } from "crawlee";
-import { router } from "./routes.js";
-import { BASE_URL, SOURCE, LABELS } from "./constants.js";
+import { router, addRouterHandlers } from "./routes.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import { setExistingProducts } from "./temp_data.js";
@@ -8,8 +7,12 @@ import { readProducts } from "#utils/database.js";
 import { settings } from "#utils/globals.js";
 
 export default async function startSony() {
+  const { BASE_URL, LABELS } = settings.source;
+
   log.setLevel(log.LEVELS.DEBUG);
   log.info(`Setting up crawler for "${BASE_URL}"`);
+
+  addRouterHandlers();
 
   const crawler = new CheerioCrawler({
     requestHandler: router,
@@ -22,7 +25,7 @@ export default async function startSony() {
   if (settings.onlyNewProducts) {
     let existingProducts;
     try {
-      existingProducts = await readProducts(SOURCE);
+      existingProducts = await readProducts();
     } catch (err) {
       log.error(err);
       existingProducts = [];
@@ -39,7 +42,7 @@ export default async function startSony() {
     },
   ]);
 
-  await dropDatasets(SOURCE);
+  await dropDatasets();
 
   log.info("Adding requests to the queue.");
 
@@ -55,6 +58,6 @@ export default async function startSony() {
   }
   await crawler.run(targets);
 
-  await exportDatasets(SOURCE);
-  await exportDataToSqlite(SOURCE);
+  await exportDatasets();
+  await exportDataToSqlite();
 }

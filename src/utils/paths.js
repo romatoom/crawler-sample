@@ -1,3 +1,5 @@
-export default function pathOfEntity(source, entityName) {
-  return `storage/key_value_stores/${source.name}/${entityName}/OUTPUT.json`;
+import { settings } from "#utils/globals.js";
+
+export default function pathOfEntity(entityName, source = settings.source) {
+  return `storage/key_value_stores/${source.currentName}/${entityName}/OUTPUT.json`;
 }

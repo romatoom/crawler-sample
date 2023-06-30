@@ -1,6 +1,5 @@
 import { CheerioCrawler, log } from "crawlee";
-import { router } from "./routes.js";
-import { BASE_URL, SOURCE, LABELS, BRAND } from "./constants.js";
+import { router, addRouterHandlers } from "./routes.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import productsInfo from "./get_products_info.js";
@@ -8,6 +7,8 @@ import { productIdGenerator } from "#utils/generators.js";
 import { settings } from "#utils/globals.js";
 
 export default async function startXiaomi() {
+  const { BASE_URL, LABELS, BRAND } = settings.source;
+
   log.setLevel(log.LEVELS.DEBUG);
   log.info(`Setting up crawler for "${BASE_URL}"`);
 
@@ -31,6 +32,8 @@ export default async function startXiaomi() {
     },
   }));
 
+  addRouterHandlers();
+
   const crawler = new CheerioCrawler({
     requestHandler: router,
   });
@@ -45,9 +48,9 @@ export default async function startXiaomi() {
     },
   ]);
 
-  await dropDatasets(SOURCE);
+  await dropDatasets();
   await crawler.run();
 
-  await exportDatasets(SOURCE);
-  await exportDataToSqlite(SOURCE);
+  await exportDatasets();
+  await exportDataToSqlite();
 }

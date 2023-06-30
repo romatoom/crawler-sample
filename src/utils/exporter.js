@@ -1,6 +1,7 @@
 import { log } from "crawlee";
 import { snakeCase } from "snake-case";
 import getPreparedData from "#utils/data_preparer.js";
+import { settings } from "#utils/globals.js";
 
 import {
   prepareSqliteDBFile,
@@ -15,19 +16,19 @@ log.setLevel(log.LEVELS.INFO);
 let sql;
 let db;
 
-export default async function exportDataToSqlite(source) {
-  await prepareSqliteDBFile(source);
+export default async function exportDataToSqlite(source = settings.source) {
+  await prepareSqliteDBFile();
 
-  const { products, manuals, productsManuals } = await getPreparedData(source);
+  const { products, manuals, productsManuals } = await getPreparedData();
 
   try {
-    db = await openDatabase(source);
+    db = await openDatabase();
   } catch (err) {
     log.error("Error opening database", err);
     return;
   }
 
-  log.info(`Start exporting data to SQLite ("${source.name}.db").`);
+  log.info(`Start exporting data to SQLite ("${source.currentName}.db").`);
 
   const exportStatistic = {
     products: {

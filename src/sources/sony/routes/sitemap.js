@@ -1,7 +1,8 @@
-import { LABELS, BASE_URL } from "../constants.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerSitemap(router) {
+  const { LABELS, BASE_URL } = settings.source;
+
   router.addHandler(LABELS.SITEMAP, async ({ request, $, log, crawler }) => {
     log.debug(`request.url: ${request.url}`);
 

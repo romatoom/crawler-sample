@@ -3,24 +3,28 @@ import { copyFile } from "node:fs/promises";
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 import { log } from "crawlee";
+import { settings } from "#utils/globals.js";
 
-export async function prepareSqliteDBFile(source) {
+export async function prepareSqliteDBFile(source = settings.source) {
   try {
-    const dbFilenamePath = `databases/${source.name}.db`;
+    const dbFilenamePath = `databases/${source.currentName}.db`;
 
     if (!fs.existsSync(dbFilenamePath)) {
       await copyFile("databases/empty.db", dbFilenamePath);
     }
   } catch (err) {
-    log.error(`Error while preparing database file "${source.name}.db":`, err);
+    log.error(
+      `Error while preparing database file "${source.currentName}.db":`,
+      err
+    );
   }
 }
 
-export async function openDatabase(source) {
-  log.info(`Open database ("${source.name}.db")!`);
+export async function openDatabase(source = settings.source) {
+  log.info(`Open database ("${source.currentName}.db")!`);
 
   const db = await open({
-    filename: `databases/${source.name}.db`,
+    filename: `databases/${source.currentName}.db`,
     driver: sqlite3.cached.Database,
   });
 
@@ -76,8 +80,8 @@ export async function findProductManualId(db, productId, manualId) {
   return findedProductManual?.id;
 }
 
-export async function readProducts(source) {
-  const db = await openDatabase(source);
+export async function readProducts(source = settings.source) {
+  const db = await openDatabase();
 
   const dbProducts = await db.all("SELECT * FROM products", (err, rows) => {
     if (err) {

@@ -15,7 +15,7 @@ settings.onlyNewProducts = process.argv.includes("only-new-products");
 settings.testMode = process.argv.includes("test-mode");
 
 const source = Object.entries(SOURCES).find(
-  (s) => s[1].originalName === sourceName
+  (s) => s[1].ORIGINAL_NAME === sourceName
 );
 
 if (!source) {

@@ -1,12 +1,13 @@
 import axios from "axios";
 import { Dataset } from "crawlee";
-import { LABELS, BASE_URL, SOURCE } from "../constants.js";
 import { langs } from "../temp_data.js";
 import { settings } from "#utils/globals.js";
 
 import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerProduct(router) {
+  const { LABELS, BASE_URL, currentName } = settings.source;
+
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 
@@ -133,14 +134,14 @@ export default function addHandlerProduct(router) {
     )
       return;
 
-    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
+    const manuals = await Dataset.open(`${currentName}/manuals`);
     await manuals.pushData(manualsResults);
 
-    const products = await Dataset.open(`${SOURCE.name}/products`);
+    const products = await Dataset.open(`${currentName}/products`);
     await products.pushData(productsResults);
 
     const productsManuals = await Dataset.open(
-      `${SOURCE.name}/products_manuals`
+      `${currentName}/products_manuals`
     );
     await productsManuals.pushData(productsManualsResults);
   });

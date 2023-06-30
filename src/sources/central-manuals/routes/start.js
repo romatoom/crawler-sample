@@ -1,7 +1,8 @@
-import { LABELS, BASE_URL } from "../constants.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerStart(router) {
+  const { LABELS, BASE_URL } = settings.source;
+
   router.addHandler(LABELS.START, async ({ request, crawler, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 

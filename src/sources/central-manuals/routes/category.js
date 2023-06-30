@@ -1,8 +1,11 @@
-import { LABELS, BASE_URL } from "../constants.js";
 import { normalizeBrand } from "#utils/formatters.js";
 import { settings } from "#utils/globals.js";
 
 export default function addHandlerCategory(router) {
+  const {
+    LABELS, BASE_URL
+  } = settings.source;
+  
   router.addHandler(LABELS.CATEGORY, async ({ request, crawler, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 

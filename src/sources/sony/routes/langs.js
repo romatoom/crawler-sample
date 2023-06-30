@@ -1,5 +1,5 @@
-import { LABELS } from "../constants.js";
 import { setLangs, setLangCountryCodes } from "../temp_data.js";
+import { settings } from "#utils/globals.js";
 import uniqWith from "lodash/uniqWith.js";
 
 function compareLanguages(lang1, lang2) {
@@ -7,6 +7,8 @@ function compareLanguages(lang1, lang2) {
 }
 
 export default function addHandlerLangs(router) {
+  const { LABELS } = settings.source;
+
   router.addHandler(LABELS.LANGS, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 

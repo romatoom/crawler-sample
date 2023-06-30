@@ -5,7 +5,10 @@ import addHandlerManuals from "./routes/manuals.js";
 
 export const router = Router.create();
 
-addHandlerStart(router);
-addHandlerCategory(router);
-addHandlerManuals(router);
+export function addRouterHandlers() {
+  addHandlerStart(router);
+  addHandlerCategory(router);
+  addHandlerManuals(router);
+}
+
 

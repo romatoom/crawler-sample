@@ -1,11 +1,11 @@
 import { Dataset } from "crawlee";
-import { LABELS, SOURCE } from "../constants.js";
 import { MI_FORMATTERS } from "#utils/formatters.js";
 import { settings } from "#utils/globals.js";
-
 import { manualIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerUserGuid(router) {
+  const { LABELS, currentName } = settings.source;
+
   router.addHandler(LABELS.USER_GUID, async ({ request, $, log }) => {
     log.debug(`Extracting data: ${request.url}`);
 
@@ -36,7 +36,7 @@ export default function addHandlerUserGuid(router) {
       if (settings.testMode) return 0;
     });
 
-    const manuals = await Dataset.open(`${SOURCE.name}/manuals`);
+    const manuals = await Dataset.open(`${currentName}/manuals`);
     await manuals.pushData(results);
   });
 }
