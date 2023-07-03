@@ -39,7 +39,7 @@ export async function findProductId(db, product) {
     [product.brand, product.name],
     (err, row) => {
       if (err) {
-        return console.error(err.message);
+        return log.error(err.message);
       }
       return row?.id;
     }
@@ -54,7 +54,7 @@ export async function findManualId(db, manual) {
   // Find manual
   const findedManual = await db.get(sql, [manual.pdfUrl], (err, row) => {
     if (err) {
-      return console.error(err.message);
+      return log.error(err.message);
     }
     return row?.id;
   });
@@ -71,7 +71,7 @@ export async function findProductManualId(db, productId, manualId) {
     [productId, manualId],
     (err, row) => {
       if (err) {
-        return console.error(err.message);
+        return log.error(err.message);
       }
       return row?.id;
     }
