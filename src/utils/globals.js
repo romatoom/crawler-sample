@@ -2,6 +2,7 @@ import XIAOMI from "#sources/xiaomi/constants.js";
 import CENTRAL_MANUALS from "#sources/central-manuals/constants.js";
 import SONY from "#sources/sony/constants.js";
 import INSTRUMART from "#sources/instrumart/constants.js";
+import MANUALOWL from "#sources/manualowl/constants.js";
 
 export const settings = {
   onlyNewProducts: false,
@@ -14,6 +15,7 @@ export const SOURCES = {
   CENTRAL_MANUALS,
   SONY,
   INSTRUMART,
+  MANUALOWL,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {

@@ -6,6 +6,7 @@ import startXiaomi from "#sources/xiaomi/index.js";
 import startCentralManuals from "#sources/central-manuals/index.js";
 import startSony from "#sources/sony/index.js";
 import startInstrumart from "#sources/instrumart/index.js";
+import startManualowl from "#sources/manualowl/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -42,6 +43,9 @@ try {
     case SOURCES.INSTRUMART:
       await startInstrumart();
       break;
+    case SOURCES.MANUALOWL:
+      await startManualowl();
+      break
   }
 } catch (err) {
   log.error(err);

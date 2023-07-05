@@ -4,7 +4,11 @@
 dist/
 node_modules/
 storage/
-saved_variables/
+
+saved_variables/*
+!saved_variables/manualowl
+saved_variables/manualowl/*
+!saved_variables/manualowl/letters.json
 
 databases/*_test.db
 test.js
