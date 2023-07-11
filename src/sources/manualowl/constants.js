@@ -1,4 +1,6 @@
 const MANUALOWL = {
+  KEY: "MANUALOWL",
+
   ORIGINAL_NAME: "manualowl",
   BASE_URL: "https://www.manualowl.com",
 

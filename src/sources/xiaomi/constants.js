@@ -1,4 +1,6 @@
 const XIAOMI = {
+  KEY: "XIAOMI",
+
   ORIGINAL_NAME: "xiaomi",
   BASE_URL: "https://www.mi.com",
   BRAND: "Xiaomi",

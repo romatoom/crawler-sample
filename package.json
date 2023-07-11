@@ -13,7 +13,8 @@
     "playwright": "*",
     "snake-case": "^3.0.4",
     "sqlite": "^4.2.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "thread-sleep": "^2.2.0"
   },
   "scripts": {
     "start": "node src/main.js"
@@ -29,6 +30,9 @@
     },
     "#utils/*": {
       "default": "./src/utils/*"
+    },
+    "#scripts/*": {
+      "default": "./src/scripts/*"
     }
   }
 }

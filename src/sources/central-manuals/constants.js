@@ -1,4 +1,6 @@
 const CENTRAL_MANUALS = {
+  KEY: "CENTRAL_MANUALS",
+
   ORIGINAL_NAME: "central-manuals",
 
   BASE_URL: {

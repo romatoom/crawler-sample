@@ -1,4 +1,6 @@
 const INSTRUMART = {
+  KEY: "INSTRUMART",
+
   ORIGINAL_NAME: "instrumart",
   BASE_URL: "https://www.instrumart.com",
 

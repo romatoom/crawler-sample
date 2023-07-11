@@ -2,13 +2,16 @@ import { CheerioCrawler, PlaywrightCrawler, Router, log } from "crawlee";
 import { router, addRouterHandlers } from "./routes.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
-import { setExistingProducts } from "./temp_data.js";
 import { readProducts } from "#utils/database.js";
 import { settings } from "#utils/globals.js";
 
 import varSave from "#utils/var_saver.js";
 
-import { normalizeMatrix, printMatrix, solveCaptcha } from "./captcha_solver.js";
+import {
+  normalizeMatrix,
+  printMatrix,
+  solveCaptcha,
+} from "./captcha_solver.js";
 
 export default async function startManualowl() {
   const { BASE_URL, LABELS } = settings.source;

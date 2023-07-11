@@ -2269,6 +2269,11 @@ tar@^6.0.2, tar@^6.1.11, tar@^6.1.2:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
+thread-sleep@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/thread-sleep/-/thread-sleep-2.2.0.tgz#a4eb6b7924ed66c29c1980a89bb12ce3d1978b8c"
+  integrity sha512-C3zZbh9fL7c/+N8mFZ82+uK+dj0q6bSUORwhSe4icwd0xERndhB+ldw4JdejGC3Cbn1DRXlLJ/w859CQdvYV9w==
+
 through@2, through@^2.3.6, through@~2.3, through@~2.3.1:
   version "2.3.8"
   resolved "https://registry.npmjs.org/through/-/through-2.3.8.tgz"

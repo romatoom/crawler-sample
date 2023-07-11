@@ -1,9 +1,8 @@
 import { Router } from "crawlee";
-
-import addHandlerSitemap from "./routes/sitemap.js";
+import addHandlerGetPdfUrls from "./routes/get_pdf_urls.js";
 
 export const router = Router.create();
 
 export function addRouterHandlers() {
-  addHandlerSitemap(router);
+  addHandlerGetPdfUrls(router);
 }

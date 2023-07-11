@@ -7,6 +7,7 @@ import startCentralManuals from "#sources/central-manuals/index.js";
 import startSony from "#sources/sony/index.js";
 import startInstrumart from "#sources/instrumart/index.js";
 import startManualowl from "#sources/manualowl/index.js";
+import startGoPro from "#sources/gopro/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -43,9 +44,15 @@ try {
     case SOURCES.INSTRUMART:
       await startInstrumart();
       break;
-    case SOURCES.MANUALOWL:
+    /* case SOURCES.MANUALOWL:
       await startManualowl();
-      break
+      break; */
+    case SOURCES.GOPRO:
+      await startGoPro();
+      break;
+    default:
+      log.error(`Не найдено скрапера для "${sourceName}"`);
+      process.exit();
   }
 } catch (err) {
   log.error(err);

@@ -1,4 +1,6 @@
 const SONY = {
+  KEY: "SONY",
+
   ORIGINAL_NAME: "sony",
   BASE_URL: "https://pro.sony",
 

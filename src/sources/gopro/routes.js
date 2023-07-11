@@ -1,9 +1,8 @@
 import { Router } from "crawlee";
-
-import addHandlerSitemap from "./routes/sitemap.js";
+import addHandlerProductsManuals from "./routes/products_manuals.js";
 
 export const router = Router.create();
 
 export function addRouterHandlers() {
-  addHandlerSitemap(router);
+  addHandlerProductsManuals(router);
 }

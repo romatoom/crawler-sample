@@ -6,9 +6,14 @@ node_modules/
 storage/
 
 saved_variables/*
+
 !saved_variables/manualowl
 saved_variables/manualowl/*
 !saved_variables/manualowl/letters.json
+
+!saved_variables/gopro
+saved_variables/gopro/*
+!saved_variables/gopro/urls_hash.json
 
 databases/*_test.db
 test.js

@@ -1,15 +1,21 @@
 import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
-import { settings } from "#utils/globals.js";
+import { addDownloadUrls } from "#utils/url_getter/index.js";
 
-import { CENTRAL_MANUALS_FORMATTERS } from "#utils/formatters.js";
 import {
+  settings,
+  SOURCES_WITH_NEED_REPLACE_URL,
   SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET,
   SOURCE_WITH_NEED_JOIN_MANUAL_TITLES,
   SOURCES,
 } from "#utils/globals.js";
-import { MI_FORMATTERS, INSTRUMART_FORMATTERS } from "#utils/formatters.js";
+
+import {
+  MI_FORMATTERS,
+  INSTRUMART_FORMATTERS,
+  CENTRAL_MANUALS_FORMATTERS,
+} from "#utils/formatters.js";
 
 const { groupBy } = pkg;
 
@@ -150,11 +156,25 @@ function productsManualsReferences(
   return references;
 }
 
+async function manualsWithReplacedUrls(sourceKey, manuals) {
+  const urls = manuals.map((m) => m.pdfUrl);
+  await addDownloadUrls(sourceKey, urls);
+
+  return manuals.map((m) => {
+    m.pdfUrl = SOURCES[sourceKey].urlsHash[m.pdfUrl] || m.pdfUrl;
+    return m;
+  });
+}
+
 export default async function getPreparedData(source = settings.source) {
   log.info("Prepare and receive data.");
 
   const rawDataManuals = fs.readFileSync(pathOfEntity("manuals"));
-  const manuals = JSON.parse(rawDataManuals);
+  let manuals = JSON.parse(rawDataManuals);
+
+  if (SOURCES_WITH_NEED_REPLACE_URL.includes(source)) {
+    manuals = await manualsWithReplacedUrls(source.KEY, manuals);
+  }
 
   const rawDataProducts = fs.readFileSync(pathOfEntity("products"));
   const products = JSON.parse(rawDataProducts);
