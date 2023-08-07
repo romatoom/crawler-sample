@@ -4,6 +4,7 @@ import SONY from "#sources/sony/constants.js";
 import INSTRUMART from "#sources/instrumart/constants.js";
 // import MANUALOWL from "#sources/manualowl/constants.js";
 import GOPRO from "#sources/gopro/constants.js";
+import CITIZENWATCH from "#sources/citizenwatch/constants.js";
 
 export const settings = {
   onlyNewProducts: false,
@@ -18,6 +19,7 @@ export const SOURCES = {
   INSTRUMART,
   // MANUALOWL,
   GOPRO,
+  CITIZENWATCH,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {
