@@ -4,6 +4,8 @@ const SONY = {
   ORIGINAL_NAME: "sony",
   BASE_URL: "https://pro.sony",
 
+  BRAND: "Sony",
+
   LABELS: {
     LANGS: "LANGS",
     SITEMAP: "SITEMAP",

@@ -16,7 +16,7 @@ export default async function startSony() {
 
   const crawler = new CheerioCrawler({
     requestHandler: router,
-    maxRequestRetries: 2,
+    maxRequestRetries: 15,
     requestHandlerTimeoutSecs: 10,
     minConcurrency: 10,
     maxConcurrency: 50,
@@ -50,7 +50,7 @@ export default async function startSony() {
   // en_GB
 
   const targets = [];
-  for (const langCountryCode of ["en_GB"]) {
+  for (const langCountryCode of ["en_GB", "ue_US"]) {
     targets.push({
       url: `${BASE_URL}/${langCountryCode}/sitemap`,
       label: LABELS.SITEMAP,

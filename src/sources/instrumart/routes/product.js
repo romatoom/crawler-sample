@@ -19,7 +19,7 @@ export default function addHandlerProduct(router) {
 
     const manualsLink = $("#docs .pdf-resource a[href]");
 
-    if (manualsLink.length === 0) return;
+    if (manualsLink.length === 0 || brand === "") return;
 
     const manualsResults = [];
     const productsManualsResults = [];
@@ -36,7 +36,7 @@ export default function addHandlerProduct(router) {
       const regexp = /(?<title>.+)\<small\>\((?<size>.+)\)\<\/small\>/s;
       const matches = manualHtml.match(regexp);
 
-      let manualTitle = matches.groups.title
+      let manualTitle = matches?.groups?.title
         ? matches.groups.title.trim()
         : `Manual for ${name}`;
 
@@ -46,7 +46,7 @@ export default function addHandlerProduct(router) {
         languages = ["Deutsch", "English", "Français"];
       }
 
-      const metadata = matches.groups.size
+      const metadata = matches?.groups?.size
         ? { size: matches.groups.size.trim() }
         : {};
 

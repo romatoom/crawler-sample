@@ -112,7 +112,7 @@ export default function addHandlerProductsManuals(router) {
               brand: BRAND,
               category,
               name: product,
-              url: "",
+              url: null,
               specs: [],
               images: [],
               metadata: {},

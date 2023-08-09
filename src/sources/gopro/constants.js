@@ -1,5 +1,3 @@
-import varRead from "#utils/var_reader.js";
-
 const GOPRO = {
   KEY: "GOPRO",
 

@@ -6,7 +6,7 @@ import { settings } from "#utils/globals.js";
 import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
 
 export default function addHandlerProduct(router) {
-  const { LABELS, BASE_URL, currentName } = settings.source;
+  const { LABELS, BASE_URL, currentName, BRAND } = settings.source;
 
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
@@ -38,17 +38,18 @@ export default function addHandlerProduct(router) {
 
       for (const specItem of specsList) {
         const specElem = $(specItem);
-        const label = specElem.find(".panel-content-left").text();
-        const value = specElem
-          .find(".panel-content-right")
-          .text()
-          .replaceAll(" ", " ");
+        const label = specElem.find(".panel-content-left").text() || "";
+        const values =
+          specElem.find(".panel-content-right").text().replaceAll(" ", " ") ||
+          "";
 
-        specs.push({
-          group,
-          label,
-          value,
-        });
+        if (label !== "" && values !== "") {
+          specs.push({
+            group,
+            label,
+            values,
+          });
+        }
       }
     }
 
@@ -66,7 +67,7 @@ export default function addHandlerProduct(router) {
     const productsResults = [
       {
         innerId: currentProductId,
-        brand: "Sony",
+        brand: BRAND,
         category,
         name: productName,
         url: request.url,
