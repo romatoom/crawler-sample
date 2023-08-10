@@ -186,3 +186,57 @@ export const INSTRUMART_FORMATTERS = {
     )} ${titlesArrayCenter} ${joinedRightTitlesArray.join(" ")}`.trim();
   },
 };
+
+export const CITIZENWATCH_FORMATTERS = {
+  joinTitles: (titles) => {
+    let joinedLeftTitlesArray = [];
+    let joinedRightTitlesArray = [];
+
+    const titlesArray = titles.map((el) => el.split(" "));
+    let titlesArrayModified = clone(titlesArray);
+
+    const arrOfLength = titlesArray.map((el) => el.length);
+    const minLength = arrOfLength.reduce((a, b) => Math.min(a, b), Infinity);
+
+    for (let count = 0; count < minLength; count++) {
+      const titlePart = titlesArray[0][count];
+
+      if (titlesArray.every((el) => el[count] === titlePart)) {
+        joinedLeftTitlesArray.push(titlePart);
+        titlesArrayModified.forEach((el) => {
+          el.shift();
+        });
+      } else {
+        break;
+      }
+    }
+
+    for (let count = 0; count < minLength; count++) {
+      const titlePart = titlesArray[0][titlesArray[0].length - 1 - count];
+
+      if (titlesArray.every((el) => el[el.length - 1 - count] === titlePart)) {
+        joinedRightTitlesArray.unshift(titlePart);
+        titlesArrayModified.forEach((el) => {
+          el.pop();
+        });
+      } else {
+        break;
+      }
+    }
+
+    titlesArrayModified = titlesArrayModified.map((el) =>
+      el.filter((el) => el.trim() !== "/").join(" ")
+    );
+    titlesArrayModified = titlesArrayModified.filter((el) => el.trim() !== "");
+
+    const titlesArrayCenter =
+      joinedLeftTitlesArray.length > 0 || joinedRightTitlesArray > 0
+        ? `[ ${titlesArrayModified.join(" / ")} ]`
+        : `${titlesArrayModified.join(" / ")}`;
+
+    return `${joinedLeftTitlesArray.join(
+      " "
+    )} ${titlesArrayCenter} ${joinedRightTitlesArray.join(" ")}`.trim();
+  },
+};
+

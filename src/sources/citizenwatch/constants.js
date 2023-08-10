@@ -1,58 +1,28 @@
+function getProductsOfCollectionURL(collection_name) {
+  return `https://www.citizenwatch.com/on/demandware.store/Sites-citizen_US-Site/en_US/Search-UpdateGrid?cgid=${collection_name}&start=0&sz=1000`;
+}
+
 const CITIZENWATCH = {
   KEY: "CITIZENWATCH",
 
+  BRAND: "Citizen",
+
   ORIGINAL_NAME: "citizenwatch",
-  BASE_URL: "https://www.citizenwatch-global.com",
+  BASE_URL: "https://www.citizenwatch.com",
 
   LABELS: {
-    PRODUCT_NUMBERS: "PRODUCT_NUMBERS",
     COLLECTION: "COLLECTION",
+    PRODUCT: "PRODUCT",
   },
 
   COLLECTIONS: [
     {
-      name: "Mens",
-      url: "https://www.citizenwatch.com/us/en/collection/mens/",
+      name: "Men’s",
+      url: getProductsOfCollectionURL("mens"),
     },
     {
-      name: "Women",
-      url: "https://www.citizenwatch.com/us/en/collection/womens/",
-    },
-    {
-      name: "New Arrivals",
-      url: "https://www.citizenwatch.com/us/en/collection/new-arrivals/",
-    },
-    {
-      name: "Smartwatches",
-      url: "https://www.citizenwatch.com/us/en/collection/smartwatches/",
-    },
-    {
-      name: "Gifts For Him",
-      url: "https://www.citizenwatch.com/us/en/collection/gifts-for-him/",
-    },
-    {
-      name: "Gifts For Her",
-      url: "https://www.citizenwatch.com/us/en/collection/gifts-for-her/",
-    },
-    {
-      name: "Wedding Engagement Gifts",
-      url: "https://www.citizenwatch.com/us/en/collection/wedding-engagement-gifts/",
-    },
-    {
-      name: "Best Graduation Gifts",
-      url: "https://www.citizenwatch.com/us/en/collection/best-graduation-gifts/",
-    },
-    {
-      name: "Disney",
-      url: "https://www.citizenwatch.com/us/en/collection/disney/",
-    },
-    {
-      name: "Marvel",
-      url: "https://www.citizenwatch.com/us/en/collection/marvel/",
-    },
-    {
-      name: "Star Wars",
-      url: "https://www.citizenwatch.com/us/en/collection/star-wars/",
+      name: "Women’s",
+      url: getProductsOfCollectionURL("womens"),
     },
   ],
 };

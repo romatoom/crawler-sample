@@ -15,6 +15,7 @@ import {
   MI_FORMATTERS,
   INSTRUMART_FORMATTERS,
   CENTRAL_MANUALS_FORMATTERS,
+  CITIZENWATCH_FORMATTERS,
 } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
@@ -60,6 +61,9 @@ function prepareManuals(manuals, source = settings.source) {
           joinTitles = CENTRAL_MANUALS_FORMATTERS.joinTitles;
           break;
         case SOURCES.INSTRUMART:
+          joinTitles = INSTRUMART_FORMATTERS.joinTitles;
+          break;
+        case SOURCES.CITIZENWATCH:
           joinTitles = INSTRUMART_FORMATTERS.joinTitles;
           break;
         default:
