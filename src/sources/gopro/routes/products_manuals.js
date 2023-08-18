@@ -1,6 +1,5 @@
-import { Dataset } from "crawlee";
+import { Dataset, sleep } from "crawlee";
 import { settings } from "#utils/globals.js";
-import sleep from "#utils/sleep.js";
 import { productIdGenerator, manualIdGenerator } from "#utils/generators.js";
 import { canUseUrlGetter } from "#utils/url_getter/index.js";
 

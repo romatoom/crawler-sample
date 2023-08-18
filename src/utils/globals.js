@@ -5,6 +5,7 @@ import INSTRUMART from "#sources/instrumart/constants.js";
 // import MANUALOWL from "#sources/manualowl/constants.js";
 import GOPRO from "#sources/gopro/constants.js";
 import CITIZENWATCH from "#sources/citizenwatch/constants.js";
+import DNS from "#sources/dns/constants.js";
 
 export const settings = {
   onlyNewProducts: false,
@@ -20,6 +21,7 @@ export const SOURCES = {
   // MANUALOWL,
   GOPRO,
   CITIZENWATCH,
+  DNS,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {

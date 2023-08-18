@@ -9,6 +9,7 @@ import startInstrumart from "#sources/instrumart/index.js";
 // import startManualowl from "#sources/manualowl/index.js";
 import startGoPro from "#sources/gopro/index.js";
 import startCitizenwatch from "#sources/citizenwatch/index.js";
+import startDns from "#sources/dns/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -60,6 +61,10 @@ try {
 
     case SOURCES.CITIZENWATCH:
       await startCitizenwatch();
+      break;
+
+    case SOURCES.DNS:
+      await startDns();
       break;
 
     default:

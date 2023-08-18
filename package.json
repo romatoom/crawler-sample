@@ -12,6 +12,7 @@
     "mkdirp": "^3.0.1",
     "playwright": "*",
     "snake-case": "^3.0.4",
+    "sound-play": "^1.1.0",
     "sqlite": "^4.2.0",
     "sqlite3": "^5.1.6",
     "thread-sleep": "^2.2.0"
