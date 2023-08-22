@@ -1,7 +1,7 @@
 import { Dataset, sleep } from "crawlee";
 import { settings } from "#utils/globals.js";
 import { manualIdGenerator, productIdGenerator } from "#utils/generators.js";
-import { getProductUrl } from "../products_urls_generator.js";
+import { getProductURLs } from "../products_urls_generator.js";
 import varSave from "#utils/var_saver.js";
 
 export default function addHandlerManual(router) {
@@ -78,9 +78,10 @@ export default function addHandlerManual(router) {
       await productsManuals.pushData(productsManualsResults);
     }
 
-    // await sleep(100);
+    const productURLsBlock = getProductURLs();
+    if (!productURLsBlock) return;
 
-    const nextProductUrl = getProductUrl();
+    const [nextProductUrl] = productURLsBlock;
 
     await crawler.addRequests([
       {

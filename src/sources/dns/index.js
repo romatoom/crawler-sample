@@ -15,9 +15,11 @@ import uniqBy from "lodash/uniqBy.js";
 import differenceBy from "lodash/differenceBy.js";
 
 import {
-  setProductUrlGenerator,
-  getProductUrl,
+  setProductURLsGenerator,
+  getProductURLs,
 } from "./products_urls_generator.js";
+
+import { setGenerators } from "#utils/generators.js";
 
 import { getCookies } from "#utils/cookie_parser.js";
 
@@ -59,10 +61,10 @@ export default async function startDns() {
 
   // await dropDatasets();
 
-  await scrapeProducts(productsURLs);
+  // await scrapeProducts(productsURLs);
 
-  // await exportDatasets();
-  // await exportDataToSqlite();
+  await exportDatasets();
+  await exportDataToSqlite();
 
   soundPlay("end");
 }
@@ -73,6 +75,7 @@ async function scrapeProducts(productsURLs) {
   const crawler = new CheerioCrawler({
     requestHandler: router,
     // maxConcurrency: 1,
+    maxRequestRetries: 1,
     useSessionPool: true,
     persistCookiesPerSession: true,
     preNavigationHooks: [
@@ -93,33 +96,37 @@ async function scrapeProducts(productsURLs) {
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
       },
     ],
-    errorHandler: (inputs, error) => {
-      if (inputs.response.statusCode === 401) {
+    /* errorHandler: (inputs, error) => {
+      if (inputs?.response?.statusCode === 401) {
         soundPlay("fail");
         console.error("Need update COOKIES_STR (src/utils/cookie_parser.js)");
         process.exit();
       }
-    },
+    }, */
   });
 
   log.info("Adding requests to the queue.");
 
-  setProductUrlGenerator(productsURLs);
+  const blockSize = 100;
+  setProductURLsGenerator(productsURLs, blockSize);
 
-  const productUrl = getProductUrl();
+  await setGenerators(settings.source);
 
   try {
-    await crawler.run([
-      {
-        url: productUrl.url,
-        label: LABELS.PRODUCT,
-        userData: {
-          data: {
-            category: productUrl.category,
-          },
+    let productURLsBlock = getProductURLs();
+    if (!productURLsBlock) return;
+
+    const targets = productURLsBlock.map((p) => ({
+      url: p.url,
+      label: LABELS.PRODUCT,
+      userData: {
+        data: {
+          category: p.category,
         },
       },
-    ]);
+    }));
+
+    await crawler.run(targets);
   } catch (err) {
     console.log(err);
   }

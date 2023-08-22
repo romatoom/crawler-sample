@@ -1,9 +1,7 @@
 import { settings } from "#utils/globals.js";
 import varSave from "#utils/var_saver.js";
 import { sleep } from "crawlee";
-import {
-  getProductUrl,
-} from "../products_urls_generator.js";
+import { getProductURLs } from "../products_urls_generator.js";
 
 export default function addHandlerProduct(router) {
   const { LABELS, BASE_URL } = settings.source;
@@ -21,9 +19,10 @@ export default function addHandlerProduct(router) {
         "array"
       );
 
-      // await sleep(100);
+      const productURLsBlock = getProductURLs();
+      if (!productURLsBlock) return;
 
-      const nextProductUrl = getProductUrl();
+      const [nextProductUrl] = productURLsBlock;
 
       await crawler.addRequests([
         {
@@ -42,7 +41,7 @@ export default function addHandlerProduct(router) {
     manualPageURL = `${BASE_URL}${manualPageURL}`;
 
     const brand = $(".product-card-top__brand img").attr("alt");
-    const imageURL = $(".product-images-slider img").attr("src");
+    const imageURL = $(".product-images-slider img").attr("src") || "";
     const name = $("h1.product-card-top__title").text();
 
     await crawler.addRequests([
