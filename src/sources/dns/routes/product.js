@@ -7,7 +7,7 @@ export default function addHandlerProduct(router) {
   const { LABELS, BASE_URL } = settings.source;
 
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log, crawler }) => {
-    // log.debug(`request.url: ${request.url}`);
+    log.debug(`request.url: ${request.url}`);
 
     let manualPageURL = $("a[data-tab-name='driver']").attr("href");
     if (!manualPageURL) {

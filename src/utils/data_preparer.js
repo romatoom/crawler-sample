@@ -16,6 +16,7 @@ import {
   INSTRUMART_FORMATTERS,
   CENTRAL_MANUALS_FORMATTERS,
   CITIZENWATCH_FORMATTERS,
+  MSI_FORMATTERS,
 } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
@@ -64,7 +65,10 @@ function prepareManuals(manuals, source = settings.source) {
           joinTitles = INSTRUMART_FORMATTERS.joinTitles;
           break;
         case SOURCES.CITIZENWATCH:
-          joinTitles = INSTRUMART_FORMATTERS.joinTitles;
+          joinTitles = CITIZENWATCH_FORMATTERS.joinTitles;
+          break;
+        case SOURCES.MSI:
+          joinTitles = MSI_FORMATTERS.joinTitles;
           break;
         default:
           throw `Not found formatters for ${source.originalName}!`;

@@ -37,4 +37,3 @@ export default async function startInstrumart() {
   await exportDataToSqlite();
 }
 
-// 8320 manuals, 4071 products, 10621 products_manuals

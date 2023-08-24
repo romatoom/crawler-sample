@@ -23,7 +23,7 @@ export const SOURCES = {
   GOPRO,
   CITIZENWATCH,
   DNS,
-  MSI
+  MSI,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {
@@ -42,6 +42,7 @@ export const SOURCE_WITH_NEED_JOIN_MANUAL_TITLES = [
   SOURCES.CENTRAL_MANUALS,
   SOURCES.INSTRUMART,
   SOURCES.CITIZENWATCH,
+  SOURCES.MSI,
 ];
 
 export const SOURCES_WITH_NEED_REPLACE_URL = [SOURCES.GOPRO];

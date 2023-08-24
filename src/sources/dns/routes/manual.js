@@ -8,7 +8,7 @@ export default function addHandlerManual(router) {
   const { LABELS, currentName } = settings.source;
 
   router.addHandler(LABELS.MANUAL, async ({ request, $, log, crawler }) => {
-    // log.debug(`request.url: ${request.url}`);
+    log.debug(`request.url: ${request.url}`);
 
     const { productUrl, category, images, brand, name } = request.userData.data;
 
