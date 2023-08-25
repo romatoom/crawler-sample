@@ -11,6 +11,7 @@ import startGoPro from "#sources/gopro/index.js";
 import startCitizenwatch from "#sources/citizenwatch/index.js";
 import startDns from "#sources/dns/index.js";
 import startMsi from "#sources/msi/index.js";
+import startWhirlpool from "#sources/whirlpool/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -70,6 +71,10 @@ try {
 
     case SOURCES.MSI:
       await startMsi();
+      break;
+
+    case SOURCES.WHIRLPOOL:
+      await startWhirlpool();
       break;
 
     default:

@@ -17,6 +17,7 @@ import {
   CENTRAL_MANUALS_FORMATTERS,
   CITIZENWATCH_FORMATTERS,
   MSI_FORMATTERS,
+  WHIRLPOOL_FORMATTERS,
 } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
@@ -49,9 +50,24 @@ function prepareManuals(manuals, source = settings.source) {
       ...manuals[0],
     };
 
-    const languages = [...new Set(manuals.map((manual) => manual.language))];
+    // Set languages
+
+    let languages = [];
+
+    for (const manualItem of manuals) {
+      if (Array.isArray(manualItem.language)) {
+        languages.push(...manualItem.language);
+      } else {
+        languages.push(manualItem.language);
+      }
+    }
+
+    languages = [...new Set(languages)];
+
     delete manual.language;
     manual.languages = languages;
+
+    //////////
 
     if (SOURCE_WITH_NEED_JOIN_MANUAL_TITLES.includes(source)) {
       const titles = [...new Set(manuals.map((manual) => manual.title))];
@@ -69,6 +85,9 @@ function prepareManuals(manuals, source = settings.source) {
           break;
         case SOURCES.MSI:
           joinTitles = MSI_FORMATTERS.joinTitles;
+          break;
+        case SOURCES.WHIRLPOOL:
+          joinTitles = WHIRLPOOL_FORMATTERS.joinTitles;
           break;
         default:
           throw `Not found formatters for ${source.originalName}!`;

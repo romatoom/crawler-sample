@@ -3,6 +3,8 @@ import clone from "clone";
 import startCase from "lodash/startCase.js";
 import camelCase from "lodash/camelCase.js";
 
+import LocaleCode from "locale-code";
+
 export function normalizeTitle(title) {
   let normalizedTitle = title.trim().toLowerCase();
   return normalizedTitle.charAt(0).toUpperCase() + normalizedTitle.slice(1);
@@ -90,6 +92,23 @@ export const MI_FORMATTERS = {
     return "Manual";
   },
 };
+
+export function getLanguagesByLocales(locales) {
+  const languages = locales.map((l) => {
+    const localeParts = l.split("_");
+
+    if (localeParts.length === 2) {
+      localeParts[1] = localeParts[1].toUpperCase();
+    } else {
+      localeParts.push(localeParts[0].toUpperCase());
+    }
+
+    const locale = localeParts.join("-");
+    return LocaleCode.getLanguageName(locale);
+  });
+
+  return [...new Set(languages)];
+}
 
 export const CENTRAL_MANUALS_FORMATTERS = {
   infoByManualTitle: (title, langCode = "EN") => {
@@ -190,3 +209,5 @@ export const INSTRUMART_FORMATTERS = {
 export const CITIZENWATCH_FORMATTERS = INSTRUMART_FORMATTERS;
 
 export const MSI_FORMATTERS = INSTRUMART_FORMATTERS;
+
+export const WHIRLPOOL_FORMATTERS = INSTRUMART_FORMATTERS;

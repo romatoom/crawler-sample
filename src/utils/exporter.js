@@ -21,12 +21,14 @@ async function exportProducts(db, products) {
   log.info(`Export products.`);
   for (const product of products) {
     const metadata = product.metadata || {};
+    const description = product.description || null;
     const productId = await findProductId(db, product);
+    const sku = product.sku || null;
 
     // Update row, if product exist in DB
     if (productId) {
       sql =
-        "UPDATE products SET brand = ?, category = ?, url = ?, specs = json(?), images = json(?), metadata = json(?) WHERE id = ?";
+        "UPDATE products SET brand = ?, category = ?, url = ?, specs = json(?), images = json(?), metadata = json(?), description = ?, sku = ? WHERE id = ?";
 
       const values = [
         product.brand,
@@ -35,6 +37,8 @@ async function exportProducts(db, products) {
         JSON.stringify(product.specs),
         JSON.stringify(product.images),
         JSON.stringify(metadata),
+        description,
+        sku,
         productId,
       ];
 
@@ -45,7 +49,7 @@ async function exportProducts(db, products) {
       exportStatistic.incrementUpdatedProducts();
     } else {
       // Insert row, if product not exist in DB
-      sql = `INSERT INTO products(brand, category, name, url, specs, images, metadata) VALUES (?, ?, ?, ?, json(?), json(?), json(?))`;
+      sql = `INSERT INTO products(brand, category, name, url, specs, images, metadata, description, sku) VALUES (?, ?, ?, ?, json(?), json(?), json(?), ?, ?)`;
 
       const values = [
         product.brand,
@@ -55,6 +59,8 @@ async function exportProducts(db, products) {
         JSON.stringify(product.specs),
         JSON.stringify(product.images),
         JSON.stringify(metadata),
+        description,
+        sku,
       ];
 
       await db.run(sql, values, (err) => {
