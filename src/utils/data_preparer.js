@@ -18,6 +18,7 @@ import {
   CITIZENWATCH_FORMATTERS,
   MSI_FORMATTERS,
   WHIRLPOOL_FORMATTERS,
+  POLARIS_FORMATTERS
 } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
@@ -88,6 +89,9 @@ function prepareManuals(manuals, source = settings.source) {
           break;
         case SOURCES.WHIRLPOOL:
           joinTitles = WHIRLPOOL_FORMATTERS.joinTitles;
+          break;
+        case SOURCES.POLARIS:
+          joinTitles = POLARIS_FORMATTERS.joinTitles;
           break;
         default:
           throw `Not found formatters for ${source.originalName}!`;
