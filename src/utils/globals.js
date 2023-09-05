@@ -8,7 +8,7 @@ import CITIZENWATCH from "#sources/citizenwatch/constants.js";
 import DNS from "#sources/dns/constants.js";
 import MSI from "#sources/msi/constants.js";
 import WHIRLPOOL from "#sources/whirlpool/constants.js";
-
+import CANON from "#sources/canon/constants.js";
 
 export const settings = {
   onlyNewProducts: false,
@@ -27,6 +27,7 @@ export const SOURCES = {
   DNS,
   MSI,
   WHIRLPOOL,
+  CANON,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {
@@ -46,7 +47,8 @@ export const SOURCE_WITH_NEED_JOIN_MANUAL_TITLES = [
   SOURCES.INSTRUMART,
   SOURCES.CITIZENWATCH,
   SOURCES.MSI,
-  SOURCES.WHIRLPOOL
+  SOURCES.WHIRLPOOL,
+  SOURCES.CANON,
 ];
 
 export const SOURCES_WITH_NEED_REPLACE_URL = [SOURCES.GOPRO];

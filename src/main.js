@@ -12,6 +12,7 @@ import startCitizenwatch from "#sources/citizenwatch/index.js";
 import startDns from "#sources/dns/index.js";
 import startMsi from "#sources/msi/index.js";
 import startWhirlpool from "#sources/whirlpool/index.js";
+import startCanon from "#sources/canon/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -75,6 +76,10 @@ try {
 
     case SOURCES.WHIRLPOOL:
       await startWhirlpool();
+      break;
+
+    case SOURCES.CANON:
+      await startCanon();
       break;
 
     default:
