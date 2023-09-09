@@ -13,6 +13,7 @@ import startDns from "#sources/dns/index.js";
 import startMsi from "#sources/msi/index.js";
 import startWhirlpool from "#sources/whirlpool/index.js";
 import startCanon from "#sources/canon/index.js";
+import startPolaris from "#sources/polaris/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -80,6 +81,10 @@ try {
 
     case SOURCES.CANON:
       await startCanon();
+      break;
+      
+    case SOURCES.POLARIS:
+      await startPolaris();
       break;
 
     default:

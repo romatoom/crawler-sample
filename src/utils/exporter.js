@@ -27,8 +27,6 @@ async function exportProducts(db, products) {
 
     // Update row, if product exist in DB
     if (productId) {
-      continue;
-
       sql =
         "UPDATE products SET brand = ?, category = ?, url = ?, specs = json(?), images = json(?), metadata = json(?), description = ?, sku = ? WHERE id = ?";
 
@@ -85,8 +83,6 @@ async function exportManuals(db, manuals) {
 
     // Update row, if manual exist in DB
     if (manualId) {
-      continue;
-
       sql =
         "UPDATE manuals SET material_type = ?, title = ?, languages = json(?), metadata = json(?) WHERE id = ?";
 
