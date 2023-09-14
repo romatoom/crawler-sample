@@ -215,3 +215,12 @@ export const WHIRLPOOL_FORMATTERS = INSTRUMART_FORMATTERS;
 export const CANON_FORMATTERS = INSTRUMART_FORMATTERS;
 
 export const POLARIS_FORMATTERS = INSTRUMART_FORMATTERS;
+
+export const CASIO_FORMATTERS = INSTRUMART_FORMATTERS;
+
+CASIO_FORMATTERS.getSeparateNames = (name) => {
+  const firstBracketIndex = name.indexOf("(");
+  const clearedName =
+    firstBracketIndex === -1 ? name : name.slice(0, firstBracketIndex);
+  return clearedName.split(",").map((n) => n.trim());
+};

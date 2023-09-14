@@ -19,14 +19,15 @@ import {
   MSI_FORMATTERS,
   WHIRLPOOL_FORMATTERS,
   CANON_FORMATTERS,
-  POLARIS_FORMATTERS
+  POLARIS_FORMATTERS,
+  CASIO_FORMATTERS,
 } from "#utils/formatters.js";
 
 const { groupBy } = pkg;
 
 import { log } from "crawlee";
 
-import pathOfEntity from "#utils/paths.js";
+import { pathOfEntity } from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -96,6 +97,9 @@ function prepareManuals(manuals, source = settings.source) {
           break;
         case SOURCES.POLARIS:
           joinTitles = POLARIS_FORMATTERS.joinTitles;
+          break;
+        case SOURCES.CASIO:
+          joinTitles = CASIO_FORMATTERS.joinTitles;
           break;
         default:
           throw `Not found formatters for ${source.originalName}!`;

@@ -81,7 +81,7 @@ export async function findProductManualId(db, productId, manualId) {
 }
 
 export async function readProducts(source = settings.source) {
-  const db = await openDatabase();
+  const db = await openDatabase(source);
 
   const dbProducts = await db.all("SELECT * FROM products", (err, rows) => {
     if (err) {

@@ -14,6 +14,7 @@ import startMsi from "#sources/msi/index.js";
 import startWhirlpool from "#sources/whirlpool/index.js";
 import startCanon from "#sources/canon/index.js";
 import startPolaris from "#sources/polaris/index.js";
+import startCasio from "#sources/casio/index.js";
 
 import { settings } from "#utils/globals.js";
 
@@ -82,9 +83,13 @@ try {
     case SOURCES.CANON:
       await startCanon();
       break;
-      
+
     case SOURCES.POLARIS:
       await startPolaris();
+      break;
+
+    case SOURCES.CASIO:
+      await startCasio();
       break;
 
     default:

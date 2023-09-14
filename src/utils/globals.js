@@ -10,7 +10,7 @@ import MSI from "#sources/msi/constants.js";
 import WHIRLPOOL from "#sources/whirlpool/constants.js";
 import CANON from "#sources/canon/constants.js";
 import POLARIS from "#sources/polaris/constants.js";
-
+import CASIO from "#sources/casio/constants.js";
 
 export const settings = {
   onlyNewProducts: false,
@@ -30,7 +30,8 @@ export const SOURCES = {
   MSI,
   WHIRLPOOL,
   CANON,
-  POLARIS
+  POLARIS,
+  CASIO,
 };
 
 for (const sourceKey of Object.keys(SOURCES)) {
@@ -52,7 +53,8 @@ export const SOURCE_WITH_NEED_JOIN_MANUAL_TITLES = [
   SOURCES.MSI,
   SOURCES.WHIRLPOOL,
   SOURCES.CANON,
-  SOURCES.POLARIS
+  SOURCES.POLARIS,
+  SOURCES.CASIO,
 ];
 
 export const SOURCES_WITH_NEED_REPLACE_URL = [SOURCES.GOPRO];
