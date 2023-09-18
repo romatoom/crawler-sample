@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const MSI = {
   KEY: "MSI",
 
@@ -8,6 +10,10 @@ const MSI = {
 
   LABELS: {
     PRODUCT: "PRODUCT",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 
   CATEGORIES: [

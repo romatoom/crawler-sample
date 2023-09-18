@@ -2,7 +2,7 @@ import varRead from "#utils/var_reader.js";
 import varSave from "#utils/var_saver.js";
 import * as readline from "node:readline/promises";
 import { stdin as input, stdout as output } from "node:process";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 
 export function printMatrix(captchaMatrix) {
   const { rowsCount, colsCount } = matrixSize(captchaMatrix);
@@ -88,7 +88,7 @@ export function letterToKey(letterMatrix) {
 }
 
 export async function solveCaptcha(captchaMatrix) {
-  const lettersHash = await varRead("letters", SOURCES.MANUALOWL);
+  const lettersHash = await varRead("letters", settings.source);
 
   const letters = lettersMatrixs(captchaMatrix);
 
@@ -116,7 +116,7 @@ export async function solveCaptcha(captchaMatrix) {
     solve += lettersHash[key].value;
   }
 
-  varSave(lettersHash, `letters`, SOURCES.MANUALOWL);
+  varSave(lettersHash, `letters`, settings.source);
 
   return solve;
 }

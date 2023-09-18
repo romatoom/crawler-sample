@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js"
+
 const CANON = {
   KEY: "CANON",
 
@@ -15,6 +17,10 @@ const CANON = {
 
     SUPPORT: "SUPPORT",
     SUPPORT_MANUALS: "SUPPORT_MANUALS",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 
   CATEGORIES: [

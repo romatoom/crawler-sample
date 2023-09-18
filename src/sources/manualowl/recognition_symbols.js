@@ -1,5 +1,5 @@
 import { PlaywrightCrawler, Router } from "crawlee";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 // import { generateId } from "#utils/generators.js";
 import {
   normalizeMatrix,
@@ -16,10 +16,10 @@ import { stdin as input, stdout as output } from "node:process";
 
 // const idGenerator = generateId(0);
 
-let lettersHash = await varRead("letters", SOURCES.MANUALOWL);
+let lettersHash = await varRead("letters", settings.source);
 
 async function prepareCaptchaData() {
-  const { BASE_URL, LABELS } = SOURCES.MANUALOWL;
+  const { BASE_URL, LABELS } = settings.source;
 
   const router = Router.create();
 
@@ -81,7 +81,7 @@ async function prepareCaptchaData() {
     //tryCount++;
   }
 
-  varSave(lettersHash, `letters`, SOURCES.MANUALOWL);
+  varSave(lettersHash, `letters`, settings.source);
 }
 
 await prepareCaptchaData();
@@ -102,4 +102,4 @@ console.log(`${Object.keys(lettersHash).length} characters recognized`);
 
 rl.close();
 
-varSave(lettersHash, `letters`, SOURCES.MANUALOWL);
+varSave(lettersHash, `letters`, settings.source);

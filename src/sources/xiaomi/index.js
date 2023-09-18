@@ -6,7 +6,7 @@ import productsInfo from "./get_products_info.js";
 import { productIdGenerator } from "#utils/generators.js";
 import { settings } from "#utils/globals.js";
 
-export default async function startXiaomi() {
+export default async function start() {
   const { BASE_URL, LABELS, BRAND } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

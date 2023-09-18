@@ -1,6 +1,6 @@
 import { Dataset } from "crawlee";
 import { settings } from "#utils/globals.js";
-import { CANON_FORMATTERS, normalizeTitle } from "#utils/formatters.js";
+import { normalizeTitle } from "#utils/formatters.js";
 import { getManualsOnPageForLang } from "../api_utils.js";
 import flow from "lodash/flow.js";
 import varSave from "#utils/var_saver.js";

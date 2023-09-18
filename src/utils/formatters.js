@@ -52,47 +52,6 @@ export function normalizeBrand(brand) {
   }
 }
 
-export const MI_FORMATTERS = {
-  cleanedManualTitle: (title) => {
-    let regexp =
-      /Generic User Guide for|Generic User Guide|General User Guide|User Guide|Safety Information|Quick Start Guide|Adapter Information|\(M2110E1\)|\(M2133E1\)/;
-
-    let cleanedTitle = title.replace(regexp, "").trim();
-    regexp = /\(3.5L\)/;
-    return cleanedTitle.replace(regexp, "3.5L");
-  },
-
-  materialTypeByManualTitle: (title) => {
-    let result = title.trim().toLowerCase();
-
-    if (
-      result.includes("generic user guide") ||
-      result.includes("general user guide") ||
-      result.includes("genel kullanım kılavuzu") ||
-      result.includes("genel kullanıcı kılavuzu")
-    ) {
-      return "General User Guide";
-    }
-
-    if (result.includes("quick start guide")) {
-      return "Quick Start Guide";
-    }
-
-    if (result.includes("user guide")) {
-      return "User Guide";
-    }
-
-    if (
-      result.includes("safety information") ||
-      result.includes("güvenlik bilgileri")
-    ) {
-      return "Safety Information";
-    }
-
-    return "Manual";
-  },
-};
-
 export function getLanguagesByLocales(locales) {
   const languages = locales.map((l) => {
     const localeParts = l.split("_");
@@ -110,117 +69,53 @@ export function getLanguagesByLocales(locales) {
   return [...new Set(languages)];
 }
 
-export const CENTRAL_MANUALS_FORMATTERS = {
-  infoByManualTitle: (title, langCode = "EN") => {
-    const MANUAL_TYPE_MAX_LENGTH = 60;
+export const BASE_MANUAL_TITLE_JOINER = (titles) => {
+  let joinedLeftTitlesArray = [];
+  let joinedRightTitlesArray = [];
 
-    const manualTitleParts = title.split(" - ").map((el) => el.trim());
-    let manualType = manualTitleParts[manualTitleParts.length - 1].trim();
+  const titlesArray = titles.map((el) => el.split(" "));
+  let titlesArrayModified = clone(titlesArray);
 
-    manualType = manualType.replaceAll("’", "'");
+  const arrOfLength = titlesArray.map((el) => el.length);
+  const minLength = arrOfLength.reduce((a, b) => Math.min(a, b), Infinity);
 
-    switch (langCode) {
-      case "EN":
-        manualType = manualType.includes("U.M.") ? "User Manual" : manualType;
-        break;
-      case "FR":
-        manualType = manualType.includes("M.E.") ? "User Manual" : "Manual";
-        break;
-      case "ES":
-        manualType = manualType.includes("M.U.") ? "User Manual" : "Manual";
-        break;
+  for (let count = 0; count < minLength; count++) {
+    const titlePart = titlesArray[0][count];
+
+    if (titlesArray.every((el) => el[count] === titlePart)) {
+      joinedLeftTitlesArray.push(titlePart);
+      titlesArrayModified.forEach((el) => {
+        el.shift();
+      });
+    } else {
+      break;
     }
+  }
 
-    if (manualType.length >= MANUAL_TYPE_MAX_LENGTH) manualType = "Manual";
+  for (let count = 0; count < minLength; count++) {
+    const titlePart = titlesArray[0][titlesArray[0].length - 1 - count];
 
-    const productName = manualTitleParts
-      .slice(0, manualTitleParts.length - 1)
-      .join(" - ")
-      .trim();
-
-    return { productName, manualType };
-  },
-
-  joinTitles: (titles) => {
-    const titleInfo = titles.map((title) => {
-      return CENTRAL_MANUALS_FORMATTERS.infoByManualTitle(title);
-    });
-
-    const productNames = [...new Set(titleInfo.map((el) => el.productName))];
-    const manualTypes = [...new Set(titleInfo.map((el) => el.manualType))];
-
-    return `${productNames.join(" / ")} - ${manualTypes.join(" / ")}`;
-  },
-};
-
-export const INSTRUMART_FORMATTERS = {
-  joinTitles: (titles) => {
-    let joinedLeftTitlesArray = [];
-    let joinedRightTitlesArray = [];
-
-    const titlesArray = titles.map((el) => el.split(" "));
-    let titlesArrayModified = clone(titlesArray);
-
-    const arrOfLength = titlesArray.map((el) => el.length);
-    const minLength = arrOfLength.reduce((a, b) => Math.min(a, b), Infinity);
-
-    for (let count = 0; count < minLength; count++) {
-      const titlePart = titlesArray[0][count];
-
-      if (titlesArray.every((el) => el[count] === titlePart)) {
-        joinedLeftTitlesArray.push(titlePart);
-        titlesArrayModified.forEach((el) => {
-          el.shift();
-        });
-      } else {
-        break;
-      }
+    if (titlesArray.every((el) => el[el.length - 1 - count] === titlePart)) {
+      joinedRightTitlesArray.unshift(titlePart);
+      titlesArrayModified.forEach((el) => {
+        el.pop();
+      });
+    } else {
+      break;
     }
+  }
 
-    for (let count = 0; count < minLength; count++) {
-      const titlePart = titlesArray[0][titlesArray[0].length - 1 - count];
+  titlesArrayModified = titlesArrayModified.map((el) =>
+    el.filter((el) => el.trim() !== "/").join(" ")
+  );
+  titlesArrayModified = titlesArrayModified.filter((el) => el.trim() !== "");
 
-      if (titlesArray.every((el) => el[el.length - 1 - count] === titlePart)) {
-        joinedRightTitlesArray.unshift(titlePart);
-        titlesArrayModified.forEach((el) => {
-          el.pop();
-        });
-      } else {
-        break;
-      }
-    }
+  const titlesArrayCenter =
+    joinedLeftTitlesArray.length > 0 || joinedRightTitlesArray > 0
+      ? `[ ${titlesArrayModified.join(" / ")} ]`
+      : `${titlesArrayModified.join(" / ")}`;
 
-    titlesArrayModified = titlesArrayModified.map((el) =>
-      el.filter((el) => el.trim() !== "/").join(" ")
-    );
-    titlesArrayModified = titlesArrayModified.filter((el) => el.trim() !== "");
-
-    const titlesArrayCenter =
-      joinedLeftTitlesArray.length > 0 || joinedRightTitlesArray > 0
-        ? `[ ${titlesArrayModified.join(" / ")} ]`
-        : `${titlesArrayModified.join(" / ")}`;
-
-    return `${joinedLeftTitlesArray.join(
-      " "
-    )} ${titlesArrayCenter} ${joinedRightTitlesArray.join(" ")}`.trim();
-  },
-};
-
-export const CITIZENWATCH_FORMATTERS = INSTRUMART_FORMATTERS;
-
-export const MSI_FORMATTERS = INSTRUMART_FORMATTERS;
-
-export const WHIRLPOOL_FORMATTERS = INSTRUMART_FORMATTERS;
-
-export const CANON_FORMATTERS = INSTRUMART_FORMATTERS;
-
-export const POLARIS_FORMATTERS = INSTRUMART_FORMATTERS;
-
-export const CASIO_FORMATTERS = INSTRUMART_FORMATTERS;
-
-CASIO_FORMATTERS.getSeparateNames = (name) => {
-  const firstBracketIndex = name.indexOf("(");
-  const clearedName =
-    firstBracketIndex === -1 ? name : name.slice(0, firstBracketIndex);
-  return clearedName.split(",").map((n) => n.trim());
+  return `${joinedLeftTitlesArray.join(
+    " "
+  )} ${titlesArrayCenter} ${joinedRightTitlesArray.join(" ")}`.trim();
 };

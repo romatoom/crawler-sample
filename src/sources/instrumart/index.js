@@ -4,7 +4,7 @@ import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import { settings } from "#utils/globals.js"
 
-export default async function startInstrumart() {
+export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

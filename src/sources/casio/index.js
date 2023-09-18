@@ -11,7 +11,7 @@ import varRead from "#utils/var_reader.js";
 
 const PRODUCTS_PARSED = true;
 
-export default async function startCasio() {
+export default async function start() {
   const { SUPPORT_URL, LABELS, LANGS, CIDS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

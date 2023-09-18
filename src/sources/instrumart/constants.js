@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const INSTRUMART = {
   KEY: "INSTRUMART",
 
@@ -8,6 +10,10 @@ const INSTRUMART = {
     CATEGORIES: "CATEGORIES",
     PRODUCTS_LIST: "PRODUCTS_LIST",
     PRODUCT: "PRODUCT",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };
 

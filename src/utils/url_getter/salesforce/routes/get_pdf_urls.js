@@ -1,5 +1,5 @@
 import { LABELS } from "#utils/url_getter/constants.js";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 
 export default function addHandlerGetPdfUrls(router) {
   router.addHandler(LABELS.GET_PDF_URL, async ({ request, page, log }) => {
@@ -15,13 +15,11 @@ export default function addHandlerGetPdfUrls(router) {
     const download = await downloadPromise;
     await download.cancel();
 
-    const { sourceKey } = request.userData.data;
-
-    SOURCES[sourceKey].urlsHash[request.url] = download.url();
+    settings.source.urlsHash[request.url] = download.url();
 
     console.log(
       "URL inserted. Count:",
-      Object.keys(SOURCES[sourceKey].urlsHash).length
+      Object.keys(settings.source.urlsHash).length
     );
   });
 }

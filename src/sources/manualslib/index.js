@@ -10,7 +10,7 @@ import { proxyConfiguration } from "#utils/proxy_config.js";
 import exportDataToSqlite from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 
-export default async function startManualsLib() {
+export default async function start() {
   log.setLevel(log.LEVELS.DEBUG);
   log.info(`Setting up crawler for "${BASE_URL}"`);
 

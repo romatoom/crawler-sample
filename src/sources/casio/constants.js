@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const CASIO = {
   KEY: "CASIO",
 
@@ -10,6 +12,16 @@ const CASIO = {
     SUPPORT_PRODUCTS: "SUPPORT_PRODUCTS",
     SUPPORT_MANUALS: "SUPPORT_MANUALS",
     PRODUCT: "PRODUCT",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
+    getSeparateNames: (name) => {
+      const firstBracketIndex = name.indexOf("(");
+      const clearedName =
+        firstBracketIndex === -1 ? name : name.slice(0, firstBracketIndex);
+      return clearedName.split(",").map((n) => n.trim());
+    },
   },
 
   LANGS: {

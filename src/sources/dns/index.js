@@ -31,7 +31,7 @@ const LAST_SUCCESS_PARSED_CATEGORY_UID = "";
 // Устновить в true, если url продуктов полностью спаршены
 const ALL_PRODUCTS_URLS_PARSED = true;
 
-export default async function startDns() {
+export default async function start() {
   const { BASE_URL } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

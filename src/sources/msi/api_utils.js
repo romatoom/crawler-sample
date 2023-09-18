@@ -1,6 +1,6 @@
 import axios from "axios";
 import varSave from "#utils/var_saver.js";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 
 const PAGE_SIZE = 10000;
 
@@ -16,18 +16,17 @@ export async function getCategories() {
     categories.push(...item);
   }
 
-  varSave(categories, "categories", SOURCES.MSI);
+  varSave(categories, "categories", settings.source);
   // После этого подчищаем и добавляем в поле CATEGORIES в src/sources/msi/constants.js
 
   return categories;
 }
 
-
 export async function getProductsTargets(category) {
   const PRODUCTS_URL = `https://www.msi.com/api/v1/product/getProductList?product_line=${category.productLine}&page_size=${PAGE_SIZE}`;
   const response = await axios.get(PRODUCTS_URL);
 
-  const { LABELS, BASE_URL } = SOURCES.MSI;
+  const { LABELS, BASE_URL } = settings.source;
 
   const productsData = response.data?.result?.getProductList;
 
@@ -38,7 +37,7 @@ export async function getProductsTargets(category) {
       data: {
         category: category.title,
         name: product.title,
-        linkName: product.link
+        linkName: product.link,
       },
     },
   }));

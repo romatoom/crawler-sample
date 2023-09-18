@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import varSave from "#utils/var_saver.js";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 
 function getColumnNameByIndex(index) {
   switch (index % 4) {
@@ -177,7 +177,7 @@ export async function getProductsManuals() {
     return pm;
   });
 
-  varSave(productManuals, "productManuals", SOURCES.CANON);
+  varSave(productManuals, "productManuals", settings.source);
 
   return productManuals;
 }

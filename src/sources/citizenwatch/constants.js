@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 function getProductsOfCollectionURL(collection_name) {
   return `https://www.citizenwatch.com/on/demandware.store/Sites-citizen_US-Site/en_US/Search-UpdateGrid?cgid=${collection_name}&start=0&sz=1000`;
 }
@@ -13,6 +15,10 @@ const CITIZENWATCH = {
   LABELS: {
     COLLECTION: "COLLECTION",
     PRODUCT: "PRODUCT",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 
   COLLECTIONS: [

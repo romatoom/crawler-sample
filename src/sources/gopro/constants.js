@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const GOPRO = {
   KEY: "GOPRO",
 
@@ -9,8 +11,11 @@ const GOPRO = {
     PRODUCTS_MANUALS: "PRODUCTS_MANUALS",
   },
 
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
+  },
+
   urlsHash: {},
 };
 
 export default GOPRO;
-

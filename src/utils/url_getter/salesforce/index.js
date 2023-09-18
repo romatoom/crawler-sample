@@ -3,7 +3,6 @@ import { router, addRouterHandlers } from "./routes.js";
 import { LABELS } from "../constants.js";
 
 export default async function startSalesforceDownloader(
-  sourceKey,
   urls
 ) {
   log.setLevel(log.LEVELS.DEBUG);
@@ -19,11 +18,6 @@ export default async function startSalesforceDownloader(
   const requests = urls.map((url) => ({
     url,
     label: LABELS.DOWNLOAD_PDF,
-    userData: {
-      data: {
-        sourceKey,
-      },
-    },
   }));
 
   await crawler.run(requests);

@@ -7,7 +7,7 @@ import { settings } from "#utils/globals.js";
 
 import { getProducts } from "./api_utils.js";
 
-export default async function startWhirlpool() {
+export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

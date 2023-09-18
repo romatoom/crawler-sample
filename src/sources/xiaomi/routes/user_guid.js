@@ -1,5 +1,4 @@
 import { Dataset } from "crawlee";
-import { MI_FORMATTERS } from "#utils/formatters.js";
 import { settings } from "#utils/globals.js";
 import { manualIdGenerator } from "#utils/generators.js";
 
@@ -21,7 +20,7 @@ export default function addHandlerUserGuid(router) {
 
       const pdfUrl = $(el).attr("href");
 
-      const materialType = MI_FORMATTERS.materialTypeByManualTitle(title);
+      const materialType = settings.source.FORMATTERS.materialTypeByManualTitle(title);
 
       if (title !== "" && pdfUrl.startsWith("https://")) {
         results.push({

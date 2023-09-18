@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const MANUALOWL = {
   KEY: "MANUALOWL",
 
@@ -6,6 +8,10 @@ const MANUALOWL = {
 
   LABELS: {
     DOWNLOAD_MANUAL: "DOWNLOAD_MANUAL",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };
 

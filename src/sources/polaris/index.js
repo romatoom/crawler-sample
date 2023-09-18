@@ -5,7 +5,7 @@ import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import { settings } from "#utils/globals.js";
 import { setGenerators } from "#utils/generators.js";
 
-export default async function startPolaris() {
+export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

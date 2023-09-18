@@ -6,7 +6,7 @@ import { setExistingProducts } from "./temp_data.js";
 import { readProducts } from "#utils/database.js";
 import { settings } from "#utils/globals.js";
 
-export default async function startSony() {
+export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

@@ -2,7 +2,6 @@ import { Dataset } from "crawlee";
 import { settings } from "#utils/globals.js";
 import { productIdGenerator, manualIdGenerator } from "#utils/generators.js";
 import { getManuals } from "../api_utils.js";
-import { CASIO_FORMATTERS } from "#utils/formatters.js";
 
 export default function addHandlerSupportManuals(router) {
   const { LABELS, BRAND, currentName } = settings.source;
@@ -36,7 +35,9 @@ export default function addHandlerSupportManuals(router) {
       `${currentName}/products_manuals`
     );
 
-    for (const productName of CASIO_FORMATTERS.getSeparateNames(productTitle)) {
+    for (const productName of settings.source.FORMATTERS.getSeparateNames(
+      productTitle
+    )) {
       const currentProductId = productIdGenerator.next().value;
 
       await productsDataset.pushData({

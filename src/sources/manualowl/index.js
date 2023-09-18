@@ -13,7 +13,7 @@ import {
   solveCaptcha,
 } from "./captcha_solver.js";
 
-export default async function startManualowl() {
+export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

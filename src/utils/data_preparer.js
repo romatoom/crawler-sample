@@ -7,21 +7,7 @@ import {
   settings,
   SOURCES_WITH_NEED_REPLACE_URL,
   SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET,
-  SOURCE_WITH_NEED_JOIN_MANUAL_TITLES,
-  SOURCES,
 } from "#utils/globals.js";
-
-import {
-  MI_FORMATTERS,
-  INSTRUMART_FORMATTERS,
-  CENTRAL_MANUALS_FORMATTERS,
-  CITIZENWATCH_FORMATTERS,
-  MSI_FORMATTERS,
-  WHIRLPOOL_FORMATTERS,
-  CANON_FORMATTERS,
-  POLARIS_FORMATTERS,
-  CASIO_FORMATTERS,
-} from "#utils/formatters.js";
 
 const { groupBy } = pkg;
 
@@ -72,45 +58,15 @@ function prepareManuals(manuals, source = settings.source) {
 
     //////////
 
-    if (SOURCE_WITH_NEED_JOIN_MANUAL_TITLES.includes(source)) {
+    if ("joinTitles" in source.FORMATTERS) {
       const titles = [...new Set(manuals.map((manual) => manual.title))];
-
-      let joinTitles;
-      switch (source) {
-        case SOURCES.CENTRAL_MANUALS:
-          joinTitles = CENTRAL_MANUALS_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.INSTRUMART:
-          joinTitles = INSTRUMART_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.CITIZENWATCH:
-          joinTitles = CITIZENWATCH_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.MSI:
-          joinTitles = MSI_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.WHIRLPOOL:
-          joinTitles = WHIRLPOOL_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.CANON:
-          joinTitles = CANON_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.POLARIS:
-          joinTitles = POLARIS_FORMATTERS.joinTitles;
-          break;
-        case SOURCES.CASIO:
-          joinTitles = CASIO_FORMATTERS.joinTitles;
-          break;
-        default:
-          throw `Not found formatters for ${source.originalName}!`;
-      }
-
-      manual.title = titles.length === 1 ? titles[0] : joinTitles(titles);
+      manual.title =
+        titles.length === 1 ? titles[0] : source.joinTitles(titles);
     }
 
     preparedManuals.push(manual);
 
-    if (!SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source)) {
+    if (!SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source.KEY)) {
       manuals.forEach((m) => {
         idsForReplace[m.innerId] = manual.innerId;
       });
@@ -165,11 +121,11 @@ function productsManualsReferences(
   source = settings.source
 ) {
   function productNameContainsInManualTitle(product, manual) {
-    switch (source) {
-      case SOURCES.XIAOMI:
+    switch (source.KEY) {
+      case "XIAOMI":
         return (
           product.name.toLowerCase() ===
-          MI_FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
+          source.FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
         );
 
       default:
@@ -195,12 +151,12 @@ function productsManualsReferences(
   return references;
 }
 
-async function manualsWithReplacedUrls(sourceKey, manuals) {
+async function manualsWithReplacedUrls(source, manuals) {
   const urls = manuals.map((m) => m.pdfUrl);
-  await addDownloadUrls(sourceKey, urls);
+  await addDownloadUrls(source, urls);
 
   return manuals.map((m) => {
-    m.pdfUrl = SOURCES[sourceKey].urlsHash[m.pdfUrl] || m.pdfUrl;
+    m.pdfUrl = source.urlsHash[m.pdfUrl] || m.pdfUrl;
     return m;
   });
 }
@@ -211,8 +167,8 @@ export default async function getPreparedData(source = settings.source) {
   const rawDataManuals = fs.readFileSync(pathOfEntity("manuals"));
   let manuals = JSON.parse(rawDataManuals);
 
-  if (SOURCES_WITH_NEED_REPLACE_URL.includes(source)) {
-    manuals = await manualsWithReplacedUrls(source.KEY, manuals);
+  if (SOURCES_WITH_NEED_REPLACE_URL.includes(source.KEY)) {
+    manuals = await manualsWithReplacedUrls(source, manuals);
   }
 
   const rawDataProducts = fs.readFileSync(pathOfEntity("products"));
@@ -226,7 +182,7 @@ export default async function getPreparedData(source = settings.source) {
 
   let preparedProductsManuals = [];
 
-  if (SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source)) {
+  if (SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source.KEY)) {
     preparedProductsManuals = productsManualsReferences(
       preparedProducts,
       preparedManuals

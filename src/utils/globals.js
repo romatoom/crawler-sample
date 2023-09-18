@@ -1,16 +1,4 @@
-import XIAOMI from "#sources/xiaomi/constants.js";
-import CENTRAL_MANUALS from "#sources/central-manuals/constants.js";
-import SONY from "#sources/sony/constants.js";
-import INSTRUMART from "#sources/instrumart/constants.js";
-// import MANUALOWL from "#sources/manualowl/constants.js";
-import GOPRO from "#sources/gopro/constants.js";
-import CITIZENWATCH from "#sources/citizenwatch/constants.js";
-import DNS from "#sources/dns/constants.js";
-import MSI from "#sources/msi/constants.js";
-import WHIRLPOOL from "#sources/whirlpool/constants.js";
-import CANON from "#sources/canon/constants.js";
-import POLARIS from "#sources/polaris/constants.js";
-import CASIO from "#sources/casio/constants.js";
+import fs from "fs";
 
 export const settings = {
   onlyNewProducts: false,
@@ -18,24 +6,20 @@ export const settings = {
   source: {},
 };
 
-export const SOURCES = {
-  XIAOMI,
-  CENTRAL_MANUALS,
-  SONY,
-  INSTRUMART,
-  // MANUALOWL,
-  GOPRO,
-  CITIZENWATCH,
-  DNS,
-  MSI,
-  WHIRLPOOL,
-  CANON,
-  POLARIS,
-  CASIO,
-};
+export async function getSourceByName(sourceName) {
+  const { default: source } = await import(
+    `#sources/${sourceName}/constants.js`
+  );
 
-for (const sourceKey of Object.keys(SOURCES)) {
-  Object.defineProperty(SOURCES[sourceKey], "currentName", {
+  return source;
+}
+
+export function setSettings(newSettings) {
+  for (const [key, value] of Object.entries(newSettings)) {
+    settings[key] = value;
+  }
+
+  Object.defineProperty(settings.source, "currentName", {
     get: function () {
       return settings.testMode
         ? `${this.ORIGINAL_NAME}_test`
@@ -44,17 +28,12 @@ for (const sourceKey of Object.keys(SOURCES)) {
   });
 }
 
-export const SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET = [SOURCES.XIAOMI];
+// Список папок с ресурсами
+export const sourceNames = fs
+  .readdirSync("src/sources", { withFileTypes: true })
+  .filter((d) => d.isDirectory())
+  .map((d) => d.name);
 
-export const SOURCE_WITH_NEED_JOIN_MANUAL_TITLES = [
-  SOURCES.CENTRAL_MANUALS,
-  SOURCES.INSTRUMART,
-  SOURCES.CITIZENWATCH,
-  SOURCES.MSI,
-  SOURCES.WHIRLPOOL,
-  SOURCES.CANON,
-  SOURCES.POLARIS,
-  SOURCES.CASIO,
-];
+export const SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET = ["XIAOMI"];
 
-export const SOURCES_WITH_NEED_REPLACE_URL = [SOURCES.GOPRO];
+export const SOURCES_WITH_NEED_REPLACE_URL = ["GOPRO"];

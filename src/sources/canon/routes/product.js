@@ -1,6 +1,5 @@
 import { Dataset } from "crawlee";
 import { settings } from "#utils/globals.js";
-import { CANON_FORMATTERS } from "#utils/formatters.js";
 import { getResourcesBySKU, getManuals, getTypeManual } from "../api_utils.js";
 import flow from "lodash/flow.js";
 

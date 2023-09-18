@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const DNS = {
   KEY: "DNS",
 
@@ -7,6 +9,10 @@ const DNS = {
   LABELS: {
     PRODUCT: "PRODUCT",
     MANUAL: "MANUAL",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };
 

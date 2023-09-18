@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as cheerio from "cheerio";
 import varSave from "#utils/var_saver.js";
-import { SOURCES } from "#utils/globals.js";
+import { settings } from "#utils/globals.js";
 import LocaleCode from "locale-code";
 import CASIO from "./constants.js";
 import { getMainURL } from "#utils/paths.js";
@@ -41,7 +41,7 @@ export async function getProducts() {
     products.push(...categoryProducts);
   }
 
-  varSave(products, "products", SOURCES.CASIO);
+  varSave(products, "products", settings.source);
 
   return products;
 }

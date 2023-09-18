@@ -10,7 +10,7 @@ import { setGenerators } from "#utils/generators.js";
 
 const PRODUCTS_PARSED = true;
 
-export default async function startCanon() {
+export default async function start() {
   const { BASE_URL, LABELS, CATEGORIES } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);

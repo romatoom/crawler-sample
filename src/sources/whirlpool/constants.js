@@ -1,3 +1,5 @@
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
+
 const WHIRLPOOL = {
   KEY: "WHIRLPOOL",
 
@@ -8,6 +10,10 @@ const WHIRLPOOL = {
 
   LABELS: {
     PRODUCT: "PRODUCT",
+  },
+
+  FORMATTERS: {
+    joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };
 

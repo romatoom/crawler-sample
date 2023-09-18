@@ -8,7 +8,7 @@ import { getCategories, getProductsTargets } from "./api_utils.js";
 import { setExistingProducts } from "#utils/checks.js";
 import { readProducts } from "#utils/database.js";
 
-export default async function startMsi() {
+export default async function start() {
   const { BASE_URL, LABELS, CATEGORIES } = settings.source;
 
   log.setLevel(log.LEVELS.DEBUG);
