@@ -20,6 +20,7 @@ let db;
 async function exportProducts(db, products) {
   log.info(`Export products.`);
   for (const product of products) {
+    // if (!product.brand) product.brand = "";
     const metadata = product.metadata || {};
     const description = product.description || null;
     const productId = await findProductId(db, product);

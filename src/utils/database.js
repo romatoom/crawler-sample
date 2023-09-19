@@ -92,3 +92,16 @@ export async function readProducts(source = settings.source) {
 
   return dbProducts;
 }
+
+export async function readManuals(source = settings.source) {
+  const db = await openDatabase(source);
+
+  const dbManuals = await db.all("SELECT * FROM manuals", (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    return rows;
+  });
+
+  return dbManuals;
+}

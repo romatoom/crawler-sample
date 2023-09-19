@@ -164,6 +164,7 @@ async function manualsWithReplacedUrls(source, manuals) {
 export default async function getPreparedData(source = settings.source) {
   log.info("Prepare and receive data.");
 
+  console.log("Read manuals from output file");
   const rawDataManuals = fs.readFileSync(pathOfEntity("manuals"));
   let manuals = JSON.parse(rawDataManuals);
 
@@ -171,17 +172,21 @@ export default async function getPreparedData(source = settings.source) {
     manuals = await manualsWithReplacedUrls(source, manuals);
   }
 
+  console.log("Read products from output file");
   const rawDataProducts = fs.readFileSync(pathOfEntity("products"));
   const products = JSON.parse(rawDataProducts);
 
+  console.log("Prepare products from output file");
   const { preparedProducts, idsForReplace: productsIdsForReplace } =
     prepareProducts(products);
 
+  console.log("Prepare manuals from output file");
   const { preparedManuals, idsForReplace: manualsIdsForReplace } =
     prepareManuals(manuals);
 
   let preparedProductsManuals = [];
 
+  console.log("Prepare products-manuals from output file");
   if (SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source.KEY)) {
     preparedProductsManuals = productsManualsReferences(
       preparedProducts,

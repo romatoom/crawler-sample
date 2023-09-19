@@ -5,5 +5,5 @@ export function pathOfEntity(entityName, source = settings.source) {
 }
 
 export function getMainURL(url) {
-  return url.split("/").slice(0, -1).join("/")
+  return url.split("/").slice(0, -1).join("/");
 }

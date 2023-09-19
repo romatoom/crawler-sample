@@ -69,6 +69,11 @@ export function getLanguagesByLocales(locales) {
   return [...new Set(languages)];
 }
 
+export function getLanguageByLangCode(langCode) {
+  let languageNames = new Intl.DisplayNames([langCode], { type: "language" });
+  return normalizeTitle(languageNames.of(langCode));
+}
+
 export const BASE_MANUAL_TITLE_JOINER = (titles) => {
   let joinedLeftTitlesArray = [];
   let joinedRightTitlesArray = [];
