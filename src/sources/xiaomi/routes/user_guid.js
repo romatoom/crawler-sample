@@ -20,7 +20,8 @@ export default function addHandlerUserGuid(router) {
 
       const pdfUrl = $(el).attr("href");
 
-      const materialType = settings.source.FORMATTERS.materialTypeByManualTitle(title);
+      const materialType =
+        settings.source.METHODS.materialTypeByManualTitle(title);
 
       if (title !== "" && pdfUrl.startsWith("https://")) {
         results.push({

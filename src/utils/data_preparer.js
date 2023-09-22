@@ -2,6 +2,7 @@ import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
 import { addDownloadUrls } from "#utils/url_getter/index.js";
+import { productIdGenerator } from "#utils/generators.js";
 
 import {
   settings,
@@ -58,15 +59,15 @@ function prepareManuals(manuals, source = settings.source) {
 
     //////////
 
-    if ("joinTitles" in source.FORMATTERS) {
+    if ("joinTitles" in source.METHODS) {
       const titles = [...new Set(manuals.map((manual) => manual.title))];
       manual.title =
-        titles.length === 1 ? titles[0] : source.joinTitles(titles);
+        titles.length === 1 ? titles[0] : source.METHODS.joinTitles(titles);
     }
 
     preparedManuals.push(manual);
 
-    if (!SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source.KEY)) {
+    if (!("referenceExist" in source.METHODS)) {
       manuals.forEach((m) => {
         idsForReplace[m.innerId] = manual.innerId;
       });
@@ -81,12 +82,39 @@ function prepareProducts(products) {
   const preparedProducts = [];
 
   for (const product of products) {
-    const existProduct = preparedProducts.find((p) =>
+    let existedProduct = preparedProducts.find((p) =>
       compareProducts(p, product)
     );
 
-    if (existProduct) {
+    if (existedProduct) {
       idsForReplace[product.innerId] = existProduct.innerId;
+
+      // объединение данных
+
+      existedProduct.images = [
+        ...new Set([...existedProduct["images"], ...product.images]),
+      ];
+
+      existedProduct.metadata = merge(
+        existedProduct.metadata,
+        product.metadata
+      );
+
+      const specs = [];
+
+      for (const spec of [...existedProduct.specs, ...product.specs]) {
+        const specsExists = specs.find(
+          (s) => s.group === spec.group && s.label === spec.label
+        );
+
+        if (!specsExists) {
+          specs.push(spec);
+        }
+      }
+
+      existedProduct.specs = [...specs];
+
+      //////
     } else {
       preparedProducts.push(product);
     }
@@ -118,37 +146,72 @@ function prepareProductsManuals(
 function productsManualsReferences(
   products,
   manuals,
+  preparedProductsManuals,
   source = settings.source
 ) {
-  function productNameContainsInManualTitle(product, manual) {
-    switch (source.KEY) {
-      case "XIAOMI":
-        return (
-          product.name.toLowerCase() ===
-          source.FORMATTERS.cleanedManualTitle(manual.title).toLowerCase()
-        );
-
-      default:
-        return false;
-    }
-  }
-
   log.info(`Prepare products-manuals references.`);
 
   const references = [];
 
+  let manualsIdsWithReference = [];
+
   for (const product of products) {
     for (const manual of manuals) {
-      if (productNameContainsInManualTitle(product, manual)) {
+      const existsFromReferences = preparedProductsManuals.find(
+        (pm) =>
+          pm.productId === product.innerId && pm.manualId === manual.innerId
+      );
+
+      if (existsFromReferences) {
+        manualsIdsWithReference.push(manual.innerId);
+      } else if (source.METHODS.referenceExist(product, manual)) {
         references.push({
           productId: product.innerId,
           manualId: manual.innerId,
         });
+
+        manualsIdsWithReference.push(manual.innerId);
       }
     }
   }
 
-  return references;
+  manualsIdsWithReference = [...new Set(manualsIdsWithReference)];
+
+  const newProducts = [];
+
+  // Добавляем псевдо-продукты
+  if ("pseudoProductForManual" in source.METHODS) {
+    for (const manual of manuals) {
+      if (!manualsIdsWithReference.includes(manual.innerId)) {
+        const productName = manual.metadata.series;
+
+        const product = newProducts.find((p) => p.name === productName);
+
+        if (!product) {
+          const productId = productIdGenerator.next().value;
+
+          const pseudoProduct = source.METHODS.pseudoProductForManual(manual);
+
+          newProducts.push({
+            innerId: productId,
+            ...pseudoProduct,
+          });
+
+          references.push({
+            productId: productId,
+            manualId: manual.innerId,
+          });
+        } else {
+          references.push({
+            productId: product.innerId,
+            manualId: manual.innerId,
+          });
+        }
+      }
+    }
+  }
+
+  return { references, newProducts };
 }
 
 async function manualsWithReplacedUrls(source, manuals) {
@@ -159,6 +222,13 @@ async function manualsWithReplacedUrls(source, manuals) {
     m.pdfUrl = source.urlsHash[m.pdfUrl] || m.pdfUrl;
     return m;
   });
+}
+
+function clearedProducts(productsManuals, products) {
+  const existedProductIDs = [
+    ...new Set(productsManuals.map((pm) => pm.productId)),
+  ];
+  return products.filter((p) => existedProductIDs.includes(p.innerId));
 }
 
 export default async function getPreparedData(source = settings.source) {
@@ -187,18 +257,14 @@ export default async function getPreparedData(source = settings.source) {
   let preparedProductsManuals = [];
 
   console.log("Prepare products-manuals from output file");
-  if (SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET.includes(source.KEY)) {
-    preparedProductsManuals = productsManualsReferences(
-      preparedProducts,
-      preparedManuals
-    );
-  } else {
-    const rawDataProductsManuals = fs.readFileSync(
-      pathOfEntity("products_manuals")
-    );
 
-    const productsManuals = JSON.parse(rawDataProductsManuals);
+  const rawDataProductsManuals = fs.readFileSync(
+    pathOfEntity("products_manuals")
+  );
 
+  const productsManuals = JSON.parse(rawDataProductsManuals);
+
+  if (productsManuals.length > 0) {
     preparedProductsManuals = prepareProductsManuals(
       productsManuals,
       productsIdsForReplace,
@@ -206,8 +272,19 @@ export default async function getPreparedData(source = settings.source) {
     );
   }
 
+  if ("referenceExist" in source.METHODS) {
+    const { references, newProducts } = productsManualsReferences(
+      preparedProducts,
+      preparedManuals,
+      preparedProductsManuals
+    );
+
+    preparedProductsManuals = [...preparedProductsManuals, ...references];
+    preparedProducts.push(...newProducts);
+  }
+
   return {
-    products: preparedProducts,
+    products: clearedProducts(preparedProductsManuals, preparedProducts),
     manuals: preparedManuals,
     productsManuals: preparedProductsManuals,
   };

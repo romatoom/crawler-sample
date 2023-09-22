@@ -35,7 +35,7 @@ export default function addHandlerSupportManuals(router) {
       `${currentName}/products_manuals`
     );
 
-    for (const productName of settings.source.FORMATTERS.getSeparateNames(
+    for (const productName of settings.source.METHODS.getSeparateNames(
       productTitle
     )) {
       const currentProductId = productIdGenerator.next().value;

@@ -14,7 +14,7 @@ const CASIO = {
     PRODUCT: "PRODUCT",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
     getSeparateNames: (name) => {
       const firstBracketIndex = name.indexOf("(");

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { Dataset } from "crawlee";
 import { settings } from "#utils/globals.js";
 import camelCase from "lodash/camelCase.js";

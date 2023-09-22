@@ -11,7 +11,7 @@ const GOPRO = {
     PRODUCTS_MANUALS: "PRODUCTS_MANUALS",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 

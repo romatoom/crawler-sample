@@ -4,6 +4,7 @@ import { productIdGenerator, manualIdGenerator } from "#utils/generators.js";
 import varSave from "#utils/var_saver.js";
 import varRead from "#utils/var_reader.js";
 import soundPlay from "#utils/sound_player.js";
+import { getSelectOptions } from "#utils/playwright_helpers.js";
 
 const LAST_PARSED_PRODUCT = {
   brand: "?",
@@ -292,21 +293,4 @@ async function getManuals(page) {
   }
 
   return manuals;
-}
-
-async function getSelectOptions(elements) {
-  const result = [];
-  const values = [];
-
-  for (const elem of elements) {
-    const value = await elem.getAttribute("value");
-    if (!value || value === "" || values.includes(value)) continue;
-
-    const title = (await elem.textContent()).trim().replace(/  +/g, " ");
-
-    result.push({ value, title });
-    values.push(value);
-  }
-
-  return result;
 }

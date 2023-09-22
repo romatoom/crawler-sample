@@ -10,7 +10,7 @@ const MANUALOWL = {
     DOWNLOAD_MANUAL: "DOWNLOAD_MANUAL",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };

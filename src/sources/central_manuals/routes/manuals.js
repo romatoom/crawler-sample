@@ -91,10 +91,8 @@ export default function addHandlerManuals(router) {
 
       const pdfUrl = `${BASE_URL[langCode]}${manualHref.slice(2)}`;
 
-      const { productName, manualType } = settings.source.FORMATTERS.infoByManualTitle(
-        manualTitle,
-        langCode
-      );
+      const { productName, manualType } =
+        settings.source.METHODS.infoByManualTitle(manualTitle, langCode);
 
       const currentManualId = manualIdGenerator.next().value;
 

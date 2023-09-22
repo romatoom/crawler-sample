@@ -12,7 +12,7 @@ const WHIRLPOOL = {
     PRODUCT: "PRODUCT",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };

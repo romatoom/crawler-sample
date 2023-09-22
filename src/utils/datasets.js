@@ -1,36 +1,38 @@
 import { Dataset, log } from "crawlee";
 import { settings } from "#utils/globals.js";
 
-export async function dropDatasets(source = settings.source) {
-  const manuals = await Dataset.open(`${source.currentName}/manuals`);
-  await manuals.drop();
+export async function dropDatasets(
+  source = settings.source,
+  datasetNames = []
+) {
+  const datasetNamesForDrop = [
+    ...["manuals", "products", "products_manuals"],
+    ...datasetNames,
+  ];
 
-  const products = await Dataset.open(`${source.currentName}/products`);
-  await products.drop();
+  for (const datasetName of datasetNamesForDrop) {
+    const dataset = await Dataset.open(`${source.currentName}/${datasetName}`);
 
-  const productsManuals = await Dataset.open(
-    `${source.currentName}/products_manuals`
-  );
-  await productsManuals.drop();
+    await dataset.drop();
+  }
 }
 
-export async function exportDatasets(source = settings.source) {
+export async function exportDatasets(
+  source = settings.source,
+  datasetNames = []
+) {
   log.info("Export datasets.");
 
-  const manuals = await Dataset.open(`${source.currentName}/manuals`);
-  await manuals.exportToJSON("OUTPUT", {
-    toKVS: `${source.currentName}/manuals`,
-  });
+  const datasetNamesForExport = [
+    ...["manuals", "products", "products_manuals"],
+    ...datasetNames,
+  ];
 
-  const products = await Dataset.open(`${source.currentName}/products`);
-  await products.exportToJSON("OUTPUT", {
-    toKVS: `${source.currentName}/products`,
-  });
+  for (const datasetName of datasetNamesForExport) {
+    const dataset = await Dataset.open(`${source.currentName}/${datasetName}`);
 
-  const productsManuals = await Dataset.open(
-    `${source.currentName}/products_manuals`
-  );
-  await productsManuals.exportToJSON("OUTPUT", {
-    toKVS: `${source.currentName}/products_manuals`,
-  });
+    await dataset.exportToJSON("OUTPUT", {
+      toKVS: `${source.currentName}/${datasetName}`,
+    });
+  }
 }

@@ -11,7 +11,7 @@ const DNS = {
     MANUAL: "MANUAL",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 };

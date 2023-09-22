@@ -1,6 +1,4 @@
 import { Dataset } from "crawlee";
-import varSave from "#utils/var_saver.js";
-import varRead from "#utils/var_reader.js";
 
 export function* generateId(startId = 0) {
   let id = startId;

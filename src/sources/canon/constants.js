@@ -1,4 +1,4 @@
-import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js"
+import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
 const CANON = {
   KEY: "CANON",
@@ -19,7 +19,7 @@ const CANON = {
     SUPPORT_MANUALS: "SUPPORT_MANUALS",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 

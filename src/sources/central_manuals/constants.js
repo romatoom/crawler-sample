@@ -15,7 +15,7 @@ const CENTRAL_MANUALS = {
     MANUALS: "MANUALS",
   },
 
-  FORMATTERS: {
+  METHODS: {
     infoByManualTitle: (title, langCode = "EN") => {
       const MANUAL_TYPE_MAX_LENGTH = 60;
 
@@ -48,7 +48,7 @@ const CENTRAL_MANUALS = {
 
     joinTitles: (titles) => {
       const titleInfo = titles.map((title) => {
-        return FORMATTERS.infoByManualTitle(title);
+        return METHODS.infoByManualTitle(title);
       });
 
       const productNames = [...new Set(titleInfo.map((el) => el.productName))];

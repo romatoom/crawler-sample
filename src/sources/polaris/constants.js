@@ -10,7 +10,7 @@ const POLARIS = {
     MANUALS: "MANUALS",
   },
 
-  FORMATTERS: {
+  METHODS: {
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
 

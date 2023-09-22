@@ -13,7 +13,11 @@ const XIAOMI = {
     PRODUCT_SPECS: "PRODUCT_SPECS",
   },
 
-  FORMATTERS: {
+  METHODS: {
+    referenceExist: (product, manual) =>
+      product.name.toLowerCase() ===
+      METHODS.cleanedManualTitle(manual.title).toLowerCase(),
+
     cleanedManualTitle: (title) => {
       let regexp =
         /Generic User Guide for|Generic User Guide|General User Guide|User Guide|Safety Information|Quick Start Guide|Adapter Information|\(M2110E1\)|\(M2133E1\)/;
