@@ -1,6 +1,7 @@
 import fs from "fs";
 import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
+import merge from "lodash/merge.js";
 import { addDownloadUrls } from "#utils/url_getter/index.js";
 import { productIdGenerator } from "#utils/generators.js";
 
@@ -87,7 +88,7 @@ function prepareProducts(products) {
     );
 
     if (existedProduct) {
-      idsForReplace[product.innerId] = existProduct.innerId;
+      idsForReplace[product.innerId] = existedProduct.innerId;
 
       // объединение данных
 
