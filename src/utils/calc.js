@@ -2,12 +2,28 @@ export function pageCount(total, perPage = 18) {
   return Math.ceil(total / perPage);
 }
 
+export function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+export function findIndexesOfSubstring(str, substr) {
+  const indexes = [];
+  
+  let lastIndex = -1;
+
+  while ((lastIndex = str.indexOf(substr, lastIndex + 1)) !== -1) {
+    indexes.push(lastIndex);
+  }
+
+  return indexes;
+}
+
 /**
-* @param {string} s1 Исходная строка
-* @param {string} s2 Сравниваемая строка
-* @param {object} [costs] Веса операций { [replace], [replaceCase], [insert], [remove] }
-* @return {number} Расстояние Левенштейна
-*/
+ * @param {string} s1 Исходная строка
+ * @param {string} s2 Сравниваемая строка
+ * @param {object} [costs] Веса операций { [replace], [replaceCase], [insert], [remove] }
+ * @return {number} Расстояние Левенштейна
+ */
 
 export function levenshtein(s1, s2, costs) {
   let i, j, l1, l2, flip, ch, chl, ii, ii2, cost, cutHalf;
@@ -45,6 +61,6 @@ export function levenshtein(s1, s2, costs) {
       buf[ii + 1] = Math.min(buf[ii2 + 1] + cd, buf[ii] + ci, buf[ii2] + cost);
     }
   }
-  
+
   return buf[l2 + cutHalf - flip];
 }

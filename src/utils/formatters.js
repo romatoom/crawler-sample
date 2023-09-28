@@ -70,6 +70,8 @@ export function getLanguagesByLocales(locales) {
 }
 
 export function getLanguageByLangCode(langCode) {
+  if (langCode.toUpperCase() === "CZ") return "Čeština";
+
   let languageNames = new Intl.DisplayNames([langCode], { type: "language" });
   return normalizeTitle(languageNames.of(langCode));
 }
