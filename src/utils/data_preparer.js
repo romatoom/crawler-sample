@@ -184,14 +184,13 @@ function productsManualsReferences(
   if ("pseudoProductForManual" in source.METHODS) {
     for (const manual of manuals) {
       if (!manualsIdsWithReference.includes(manual.innerId)) {
-        const productName = manual.metadata.series;
+        const pseudoProduct = source.METHODS.pseudoProductForManual(manual);
+        const productName = pseudoProduct.name;
 
         const product = newProducts.find((p) => p.name === productName);
 
         if (!product) {
           const productId = productIdGenerator.next().value;
-
-          const pseudoProduct = source.METHODS.pseudoProductForManual(manual);
 
           newProducts.push({
             innerId: productId,

@@ -17,17 +17,15 @@ const SOURCE = {
   },
 
   METHODS: {
-    pseudoProductForManual: (manual) => {
-      return {
-        brand: SOURCE.BRAND,
-        category: "Metal detectors",
-        name: null,
-        url: null,
-        specs: [],
-        images: [],
-        metadata: {},
-      };
-    },
+    pseudoProductForManual: (manual) => ({
+      brand: SOURCE.BRAND,
+      category: "Metal detectors",
+      name: null,
+      url: null,
+      specs: [],
+      images: [],
+      metadata: {},
+    }),
 
     joinTitles: BASE_MANUAL_TITLE_JOINER,
   },
@@ -64,7 +62,7 @@ const SOURCE = {
     "VI",
     "HR",
     "KU",
-  ]
+  ],
 };
 
 export default SOURCE;
