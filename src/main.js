@@ -1,7 +1,7 @@
 import { log } from "crawlee";
 import { sourceNames, getSourceByName, setSettings } from "#utils/globals.js";
 
-const INACTIVE_SOURSE_NAMES = ["manualowl", "manualslib"];
+const INACTIVE_SOURSE_NAMES = ["manualowl", "manualslib", "ownersmanuals2"];
 
 const sourceName = process.argv[2];
 
