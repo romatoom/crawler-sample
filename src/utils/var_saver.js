@@ -10,6 +10,8 @@ export default function varSave(
   mode = "write",
   type = "object"
 ) {
+  if (type === "array" && mode === "append" && obj.length === 0) return;
+
   const filePath = `saved_variables/${source.currentName}/${filename}.json`;
   mkdirp.sync(path.dirname(filePath));
 

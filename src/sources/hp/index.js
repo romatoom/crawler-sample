@@ -6,6 +6,7 @@ import { settings } from "#utils/globals.js";
 import { setGenerators } from "#utils/generators.js";
 
 import { getCategories } from "./api_utils.js";
+import varRead from "#utils/var_reader.js";
 
 export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
@@ -19,6 +20,8 @@ export default async function start() {
     requestHandler: router,
     headless: true,
     requestHandlerTimeoutSecs: 500000,
+    minConcurrency: 1,
+    maxConcurrency: 1,
   });
 
   log.info("Adding requests to the queue.");
@@ -27,19 +30,39 @@ export default async function start() {
 
   await setGenerators(settings.source);
 
-  const targets = (await getCategories()).map((c) => ({
-    url: c.url,
-    label: LABELS.CATEGORY,
+  let series;
+  try {
+    series = await varRead("series", settings.source, "arrayWithoutBrackets");
+  } catch (e) {
+    const targets = (await getCategories()).map((c) => ({
+      url: c.url,
+      label: LABELS.CATEGORY,
+      userData: {
+        data: {
+          category: c.category,
+        },
+      },
+    }));
+
+    for (const target of targets) {
+      await crawler.run([target]);
+    }
+
+    series = await varRead("series", settings.source, "arrayWithoutBrackets");
+  }
+
+  const targets = series.map((s) => ({
+    url: s.url,
+    label: LABELS.SERIES,
     userData: {
       data: {
-        category: c.category,
+        category: s.category,
+        series: s.series,
       },
     },
   }));
 
-  for (const target of targets) {
-    await crawler.run([target]);
-  }
+  await crawler.run(targets);
 
   await exportDatasets();
   await exportDataToSqlite();

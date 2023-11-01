@@ -76,24 +76,16 @@ export default function addHandlerSeries(router) {
 
         const manuals = [];
 
-        let manualsForLang;
+        let manualsForLangs;
+
+        const promises = [];
         for (const lang of langs) {
-          try {
-            manualsForLang = await getLangManualsForProduct(
-              productID,
-              lang.languageCode
-            );
-          } catch (err) {
-            continue;
-          }
+          promises.push(getLangManualsForProduct(productID, lang));
+        }
+        manualsForLangs = await Promise.all(promises);
 
-          const language = lang.languageName;
-
-          manuals.push(
-            ...manualsForLang.map((m) => {
-              return { ...m, language };
-            })
-          );
+        for (const manualsItem of manualsForLangs) {
+          manuals.push(...manualsItem);
         }
 
         if (manuals.length === 0) continue;
