@@ -8,7 +8,6 @@ import { productIdGenerator } from "#utils/generators.js";
 import {
   settings,
   SOURCES_WITH_NEED_REPLACE_URL,
-  SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET,
 } from "#utils/globals.js";
 
 const { groupBy } = pkg;
