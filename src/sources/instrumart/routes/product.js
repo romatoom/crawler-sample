@@ -28,7 +28,9 @@ export default function addHandlerProduct(router) {
 
     for (const manualItem of manualsLink) {
       const manualElem = $(manualItem);
-      const pdfUrl = `${BASE_URL}${manualElem.attr("href")}`;
+
+      const url = manualElem.attr("href");
+      const pdfUrl = url.startsWith("http") ? url : `${BASE_URL}${url}`;
 
       let languages = ["English"];
 
