@@ -8,9 +8,16 @@ export default function addHandlerProduct(router) {
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
 
-    let manualLink = $("a.pdfDown");
-    if (manualLink.length === 0) return;
-    manualLink = encodeURI(`${BASE_URL}${manualLink.attr("href")}`);
+    const manuals = [];
+
+    $("a.pdfDown").each((_, el) => {
+      const url = $("a.pdfDown").attr("href");
+      if (!url.endsWith(".pdf")) return true;
+
+      manuals.push(encodeURI(`${BASE_URL}${url}`));
+    });
+
+    if (manuals.length === 0) return;
 
     const { productName, category } = request.userData.data;
 
@@ -46,20 +53,22 @@ export default function addHandlerProduct(router) {
       images,
     });
 
-    const currentManualId = manualIdGenerator.next().value;
+    for (const manualLink of manuals) {
+      const currentManualId = manualIdGenerator.next().value;
 
-    await manualsDataset.pushData({
-      innerId: currentManualId,
-      materialType: "Manual",
-      pdfUrl: manualLink,
-      title: `Manual for ${productName}`,
-      language: "English",
-      metadata: {},
-    });
+      await manualsDataset.pushData({
+        innerId: currentManualId,
+        materialType: "Manual",
+        pdfUrl: manualLink,
+        title: `Manual for ${productName}`,
+        language: "English",
+        metadata: {},
+      });
 
-    await productsManualsDataset.pushData({
-      productId: currentProductId,
-      manualId: currentManualId,
-    });
+      await productsManualsDataset.pushData({
+        productId: currentProductId,
+        manualId: currentManualId,
+      });
+    }
   });
 }
