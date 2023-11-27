@@ -1,6 +1,6 @@
 import { CheerioCrawler, log } from "crawlee";
 import { router, addRouterHandlers } from "./routes.js";
-import exportDataToSqlite from "#utils/exporter.js";
+import { exportDataToSqlite } from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 import { settings } from "#utils/globals.js";
 import { setGenerators } from "#utils/generators.js";

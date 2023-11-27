@@ -29,6 +29,8 @@ export async function exportDatasets(
   ];
 
   for (const datasetName of datasetNamesForExport) {
+    log.info(`Export datasets ${datasetName}`);
+
     const dataset = await Dataset.open(`${source.currentName}/${datasetName}`);
 
     await dataset.exportToJSON("OUTPUT", {

@@ -1,20 +1,19 @@
 import fs from "fs";
+import * as fsAsync from "node:fs/promises";
+
 import pkg from "core-js/actual/array/group-by.js";
 import uniqWith from "lodash/uniqWith.js";
 import merge from "lodash/merge.js";
 import { addDownloadUrls } from "#utils/url_getter/index.js";
 import { productIdGenerator } from "#utils/generators.js";
 
-import {
-  settings,
-  SOURCES_WITH_NEED_REPLACE_URL,
-} from "#utils/globals.js";
+import { settings, SOURCES_WITH_NEED_REPLACE_URL } from "#utils/globals.js";
 
 const { groupBy } = pkg;
 
 import { log } from "crawlee";
 
-import { pathOfEntity } from "#utils/paths.js";
+import { pathOfEntity, pathOfEntityDataset } from "#utils/paths.js";
 
 log.setLevel(log.LEVELS.INFO);
 
@@ -281,6 +280,128 @@ export default async function getPreparedData(source = settings.source) {
     preparedProductsManuals = [...preparedProductsManuals, ...references];
     preparedProducts.push(...newProducts);
   }
+
+  return {
+    products: clearedProducts(preparedProductsManuals, preparedProducts),
+    manuals: preparedManuals,
+    productsManuals: preparedProductsManuals,
+  };
+}
+
+
+export async function getPreparedDataWithRange(
+  productsRange,
+  manualsRange,
+  productsManualsRange,
+  source = settings.source
+) {
+  log.info("Prepare and receive data.");
+
+  ///
+
+  console.log("Read manuals");
+
+  const promises = [];
+
+  for (let id = manualsRange.start; id <= manualsRange.end; id++) {
+    const filename = `${id.toString().padStart(9, "0")}.json`;
+
+    promises.push(
+      fsAsync.readFile(`${pathOfEntityDataset("manuals")}/${filename}`, {
+        encoding: "utf8",
+      })
+    );
+  }
+
+  const manuals = (await Promise.all(promises)).map((m) => JSON.parse(m));
+
+  if (SOURCES_WITH_NEED_REPLACE_URL.includes(source.KEY)) {
+    manuals = await manualsWithReplacedUrls(source, manuals);
+  }
+
+  ///
+
+  console.log("Read products");
+
+  promises.length = 0;
+
+  for (let id = productsRange.start; id <= productsRange.end; id++) {
+    const filename = `${id.toString().padStart(9, "0")}.json`;
+
+    promises.push(
+      fsAsync.readFile(`${pathOfEntityDataset("products")}/${filename}`, {
+        encoding: "utf8",
+      })
+    );
+  }
+
+  const products = (await Promise.all(promises)).map((p) => JSON.parse(p));
+
+  ////
+
+  console.log("Read products_manuals");
+
+  promises.length = 0;
+
+  for (
+    let id = productsManualsRange.start;
+    id <= productsManualsRange.end;
+    id++
+  ) {
+    const filename = `${id.toString().padStart(9, "0")}.json`;
+
+    promises.push(
+      fsAsync.readFile(
+        `${pathOfEntityDataset("products_manuals")}/${filename}`,
+        {
+          encoding: "utf8",
+        }
+      )
+    );
+  }
+
+  const productsManuals = (await Promise.all(promises)).map((p) =>
+    JSON.parse(p)
+  );
+
+  ///
+
+  console.log("Prepare products");
+  const { preparedProducts, idsForReplace: productsIdsForReplace } =
+    prepareProducts(products);
+
+  ///
+
+  console.log("Prepare manuals");
+  const { preparedManuals, idsForReplace: manualsIdsForReplace } =
+    prepareManuals(manuals);
+
+  ///
+
+  console.log("Prepare products_manuals");
+
+  let preparedProductsManuals = [];
+
+  if (productsManuals.length > 0) {
+    preparedProductsManuals = prepareProductsManuals(
+      productsManuals,
+      productsIdsForReplace,
+      manualsIdsForReplace
+    );
+  }
+
+  if ("referenceExist" in source.METHODS) {
+    const { references, newProducts } = productsManualsReferences(
+      preparedProducts,
+      preparedManuals,
+      preparedProductsManuals
+    );
+
+    preparedProductsManuals = [...preparedProductsManuals, ...references];
+    preparedProducts.push(...newProducts);
+  }
+
+  ///
 
   return {
     products: clearedProducts(preparedProductsManuals, preparedProducts),

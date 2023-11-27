@@ -1,7 +1,10 @@
 import { log } from "crawlee";
-import getPreparedData from "#utils/data_preparer.js";
+import { getPreparedData, getPreparedDataWithRange } from "#utils/data_preparer.js";
 import { settings } from "#utils/globals.js";
 import { exportStatistic } from "#utils/statistics.js";
+import { pathOfEntityDataset } from "#utils/paths.js";
+
+import * as fs from "node:fs/promises";
 
 import {
   prepareSqliteDBFile,
@@ -154,7 +157,7 @@ async function exportProductsManuals(db, products, manuals, productsManuals) {
   }
 }
 
-export default async function exportDataToSqlite(source = settings.source) {
+export async function exportDataToSqlite(source = settings.source) {
   await prepareSqliteDBFile();
 
   const { products, manuals, productsManuals } = await getPreparedData();
@@ -176,5 +179,72 @@ export default async function exportDataToSqlite(source = settings.source) {
     exportStatistic.print();
   } catch (err) {
     log.error(err);
+  }
+}
+
+
+export async function exportDataToSqliteWithRange(source = settings.source) {
+  await prepareSqliteDBFile();
+
+  try {
+    db = await openDatabase();
+  } catch (err) {
+    log.error("Error opening database", err);
+    return;
+  }
+
+  const LIMIT = 50000;
+
+  const dirPath = pathOfEntityDataset("products_manuals");
+  const productsManualsFiles = await fs.readdir(dirPath);
+
+  let currProductManual = 0;
+
+  while (currProductManual < productsManualsFiles.length) {
+    const productsRange = {};
+    const manualsRange = {};
+
+    let next = currProductManual + LIMIT;
+    if (next > productsManualsFiles.length) next = productsManualsFiles.length;
+
+    const productsManualsRange = {
+      start: currProductManual + 1,
+      end: next,
+    };
+
+    for (const pos in productsManualsRange) {
+      const productsManualsFileName =
+        productsManualsFiles[productsManualsRange[pos] - 1];
+
+      const rec = await fs.readFile(`${dirPath}/${productsManualsFileName}`, {
+        encoding: "utf8",
+      });
+
+      const { productId, manualId } = JSON.parse(rec);
+
+      productsRange[pos] = productId;
+      manualsRange[pos] = manualId;
+    }
+
+    const { products, manuals, productsManuals } =
+      await getPreparedDataWithRange(
+        productsRange,
+        manualsRange,
+        productsManualsRange
+      );
+
+    log.info(`Start exporting data to SQLite ("${source.currentName}.db").`);
+
+    try {
+      await exportProducts(db, products);
+      await exportManuals(db, manuals);
+      await exportProductsManuals(db, products, manuals, productsManuals);
+
+      exportStatistic.print();
+    } catch (err) {
+      log.error(err);
+    }
+
+    currProductManual = next;
   }
 }

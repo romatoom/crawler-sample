@@ -7,7 +7,7 @@ import { router } from "./routes.js";
 import { BASE_URL, SOURCE_NAME, LABELS } from "./constants.js";
 import { proxyConfiguration } from "#utils/proxy_config.js";
 
-import exportDataToSqlite from "#utils/exporter.js";
+import { exportDataToSqlite } from "#utils/exporter.js";
 import { dropDatasets, exportDatasets } from "#utils/datasets.js";
 
 export default async function start() {
