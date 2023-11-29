@@ -229,7 +229,7 @@ function clearedProducts(productsManuals, products) {
   return products.filter((p) => existedProductIDs.includes(p.innerId));
 }
 
-export default async function getPreparedData(source = settings.source) {
+export async function getPreparedData(source = settings.source) {
   log.info("Prepare and receive data.");
 
   console.log("Read manuals from output file");
@@ -287,7 +287,6 @@ export default async function getPreparedData(source = settings.source) {
     productsManuals: preparedProductsManuals,
   };
 }
-
 
 export async function getPreparedDataWithRange(
   productsRange,

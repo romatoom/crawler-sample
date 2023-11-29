@@ -8,6 +8,7 @@
     "clone": "^2.1.2",
     "core-js": "^3.30.2",
     "crawlee": "^3.0.0",
+    "is-valid-http-url": "^1.0.3",
     "locale-code": "^2.0.2",
     "lodash": "^4.17.21",
     "mkdirp": "^3.0.1",
