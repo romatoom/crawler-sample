@@ -2,17 +2,18 @@ import { snakeCase } from "snake-case";
 
 export class Statistic {
   #products = {
-    insertedCount: 0,
-    updatedCount: 0,
+    insertedIDs: new Set(),
+    updatedIDs: new Set(),
   };
 
   #manuals = {
-    insertedCount: 0,
-    updatedCount: 0,
+    insertedIDs: new Set(),
+    updatedIDs: new Set(),
   };
 
   #productsManuals = {
-    insertedCount: 0,
+    insertedIDs: new Set(),
+    updatedIDs: new Set(),
   };
 
   get products() {
@@ -27,13 +28,13 @@ export class Statistic {
     return this.#productsManuals;
   }
 
-  increment(entity, type) {
-    this[`${entity}`][`${type}Count`]++;
+  increment(entity, type, id) {
+    this[`${entity}`][`${type}IDs`].add(id);
   }
 
   print() {
     ["products", "manuals", "productsManuals"].forEach((entity) => {
-      const insertedCount = this[entity].insertedCount;
+      const insertedCount = [...this[entity].insertedIDs].length;
 
       if (insertedCount > 0) {
         console.log(
@@ -41,11 +42,13 @@ export class Statistic {
         );
       }
 
-      const updatedCount = this[entity].updatedCount || 0;
+      const updatedCount = [...this[entity].updatedIDs].length;
 
       if (updatedCount > 0) {
         console.log(
-          `Updated ${updatedCount} records to table "${snakeCase(entity)}".`
+          `Records from table "${snakeCase(
+            entity
+          )}" updated ${updatedCount} times.`
         );
       }
     });

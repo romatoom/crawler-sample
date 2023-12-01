@@ -7,6 +7,7 @@ import state from "#utils/classes/state.js";
 
 export class Database {
   static folder = "databases";
+
   // Call from Database.build(...)
   constructor(sourceName, db) {
     this.sourceName = sourceName;
@@ -91,7 +92,7 @@ export class Database {
     ];
 
     await this.db.run(sql, values);
-    state.statistic.increment("products", "updated");
+    state.statistic.increment("products", "updated", productId);
   }
 
   async insertProduct(data) {
@@ -109,8 +110,9 @@ export class Database {
       data.sku,
     ];
 
-    await this.db.run(sql, values);
-    state.statistic.increment("products", "inserted");
+    const result = await this.db.run(sql, values);
+    console.log("result", result);
+    state.statistic.increment("products", "inserted", result.lastID);
   }
 
   async updateManual(manualId, data) {
@@ -126,7 +128,7 @@ export class Database {
     ];
 
     await this.db.run(sql, values);
-    state.statistic.increment("manuals", "updated");
+    state.statistic.increment("manuals", "updated", manualId);
   }
 
   async insertManual(data) {
@@ -140,8 +142,8 @@ export class Database {
       JSON.stringify(data.metadata),
     ];
 
-    await this.db.run(sql, values);
-    state.statistic.increment("manuals", "inserted");
+    const result = await this.db.run(sql, values);
+    state.statistic.increment("manuals", "inserted", result.lastID);
   }
 
   async insertProductManual(data) {
@@ -149,8 +151,8 @@ export class Database {
 
     const values = [data.productId, data.manualId];
 
-    await this.db.run(sql, values);
-    state.statistic.increment("productsManuals", "updated");
+    const result = await this.db.run(sql, values);
+    state.statistic.increment("productsManuals", "inserted", result.lastID);
   }
 
   async readRowsFromTable(tableName) {

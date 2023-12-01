@@ -8,7 +8,7 @@ import { Manual } from "#utils/classes/manual.js";
 import { ProductManual } from "#utils/classes/productManual.js";
 
 export default function addHandlerProduct(router) {
-  const { LABELS, BRAND, BASE_URL, currentName } = settings.source;
+  const { LABELS, BRAND, BASE_URL } = settings.source;
 
   router.addHandler(LABELS.PRODUCT, async ({ request, $, log }) => {
     log.debug(`request.url: ${request.url}`);
@@ -16,7 +16,7 @@ export default function addHandlerProduct(router) {
     const manuals = [];
 
     $("a.pdfDown").each((_, el) => {
-      const url = $("a.pdfDown").attr("href");
+      const url = $(el).attr("href");
       if (!url.endsWith(".pdf")) return true;
 
       manuals.push(encodeURI(`${BASE_URL}${url}`));
@@ -39,16 +39,10 @@ export default function addHandlerProduct(router) {
       images.push(`${BASE_URL}/${$(image).attr("src")}`);
     });
 
-    /* const manualsDataset = await Dataset.open(`${currentName}/manuals`);
-    const productsDataset = await Dataset.open(`${currentName}/products`);
-    const productsManualsDataset = await Dataset.open(
-      `${currentName}/products_manuals`
-    ); */
-
     const currentProductId = productIdGenerator.next().value;
 
     const product = new Product({
-      innerId: currentProductId,
+      // innerId: currentProductId,
       brand: BRAND,
       category,
       name: productName,
@@ -64,7 +58,7 @@ export default function addHandlerProduct(router) {
       const currentManualId = manualIdGenerator.next().value;
 
       const manual = new Manual({
-        innerId: currentManualId,
+        //innerId: currentManualId,
         materialType: "Manual",
         pdfUrl: manualLink,
         title: `Manual for ${productName}`,
@@ -75,8 +69,8 @@ export default function addHandlerProduct(router) {
       await state.storage.pushData(manual);
 
       const productManual = new ProductManual({
-        productId: currentProductId,
-        manualId: currentManualId,
+        productId: product.data.innerId,
+        manualId: manual.data.innerId,
       });
 
       await state.storage.pushData(productManual);

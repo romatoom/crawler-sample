@@ -11,7 +11,7 @@ export default function addHandlerProduct(router) {
     const manuals = [];
 
     $("a.pdfDown").each((_, el) => {
-      const url = $("a.pdfDown").attr("href");
+      const url = $(el).attr("href");
       if (!url.endsWith(".pdf")) return true;
 
       manuals.push(encodeURI(`${BASE_URL}${url}`));

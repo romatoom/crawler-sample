@@ -19,8 +19,6 @@ export class Serializer {
 
     if (isArray && append && obj.length === 0) return;
 
-    console.log(isArray);
-
     const filePath = this.getFilePath(objName);
     mkdirp.sync(path.dirname(filePath));
 
