@@ -302,7 +302,7 @@ export async function getPreparedDataWithRange(
 
   const promises = [];
 
-  for (let id = manualsRange.start; id <= manualsRange.end; id++) {
+  for (const id of manualsRange) {
     const filename = `${id.toString().padStart(9, "0")}.json`;
 
     promises.push(
@@ -324,7 +324,7 @@ export async function getPreparedDataWithRange(
 
   promises.length = 0;
 
-  for (let id = productsRange.start; id <= productsRange.end; id++) {
+  for (const id of productsRange) {
     const filename = `${id.toString().padStart(9, "0")}.json`;
 
     promises.push(
@@ -342,11 +342,7 @@ export async function getPreparedDataWithRange(
 
   promises.length = 0;
 
-  for (
-    let id = productsManualsRange.start;
-    id <= productsManualsRange.end;
-    id++
-  ) {
+  for (const id of productsManualsRange) {
     const filename = `${id.toString().padStart(9, "0")}.json`;
 
     promises.push(

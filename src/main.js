@@ -6,7 +6,7 @@ import state from "#utils/classes/state.js";
 const INACTIVE_SOURSE_NAMES = ["manualowl", "manualslib", "ownersmanuals2"];
 
 const sourceName = process.argv[2];
-state.init(sourceName);
+await state.init(sourceName);
 
 if (INACTIVE_SOURSE_NAMES.includes(sourceName)) {
   log.error(`Скрапер для "${sourceName}" отключён`);

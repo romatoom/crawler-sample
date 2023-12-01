@@ -30,6 +30,6 @@ export default function addHandlerProducts(router) {
         });
     });
 
-    await crawler.addRequests(targets.slice(0, 10));
+    await crawler.addRequests(targets.slice(0, 11));
   });
 }

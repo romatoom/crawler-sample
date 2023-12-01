@@ -1,5 +1,8 @@
 import { log } from "crawlee";
-import { getPreparedData, getPreparedDataWithRange } from "#utils/data_preparer.js";
+import {
+  getPreparedData,
+  getPreparedDataWithRange,
+} from "#utils/data_preparer.js";
 import { settings } from "#utils/globals.js";
 import { exportStatistic } from "#utils/statistics.js";
 import { pathOfEntityDataset } from "#utils/paths.js";
@@ -181,7 +184,6 @@ export async function exportDataToSqlite(source = settings.source) {
     log.error(err);
   }
 }
-
 
 export async function exportDataToSqliteWithRange(source = settings.source) {
   await prepareSqliteDBFile();

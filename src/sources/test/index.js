@@ -1,11 +1,10 @@
 import { CheerioCrawler, log } from "crawlee";
 import { router, addRouterHandlers } from "./routes.js";
-import { exportDataToSqlite } from "#utils/exporter.js";
-import { exportDatasets } from "#utils/datasets.js";
 import { settings } from "#utils/globals.js";
 import { setGenerators } from "#utils/generators.js";
 
 import state from "#utils/classes/state.js";
+import { Exporter } from "#utils/classes/exporter.js";
 
 export default async function start() {
   const { BASE_URL, LABELS } = settings.source;
@@ -35,6 +34,7 @@ export default async function start() {
     },
   ]);
 
-  await exportDatasets();
-  await exportDataToSqlite();
+  await state.storage.exportDatasets();
+
+  await new Exporter(state.sourceName, state.db).export({ partLimit: 12 });
 }
