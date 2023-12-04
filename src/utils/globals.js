@@ -28,11 +28,18 @@ export function setSettings(newSettings) {
   });
 }
 
+// Список папок с ресурсами (после рефакторинга)
+export const newSourceNames = fs
+  .readdirSync("src/sources", { withFileTypes: true })
+  .filter((d) => fs.existsSync(`src/sources/${d.name}/${d.name}.js`))
+  .map((d) => d.name);
+
 // Список папок с ресурсами
 export const sourceNames = fs
   .readdirSync("src/sources", { withFileTypes: true })
   .filter((d) => d.isDirectory())
-  .map((d) => d.name);
+  .map((d) => d.name)
+  .filter((s) => !newSourceNames.includes(s));
 
 export const SOURCE_WITHOUT_PRODUCTS_MANUALS_DATASET = ["XIAOMI"];
 

@@ -4,6 +4,13 @@ import isUrl from "is-valid-http-url";
 export class Product extends Entity {
   static requiredAttributes = ["innerId", "brand", "category", "name"];
 
+  static equals(product1, product2) {
+    return (
+      product1.data.brand === product2.data.brand &&
+      product1.data.name === product2.data.name
+    );
+  }
+
   constructor(data) {
     const datasetName = "products";
     super(data, datasetName);

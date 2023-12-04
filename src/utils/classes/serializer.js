@@ -20,6 +20,7 @@ export class Serializer {
     if (isArray && append && obj.length === 0) return;
 
     const filePath = this.getFilePath(objName);
+
     mkdirp.sync(path.dirname(filePath));
 
     const outputString =

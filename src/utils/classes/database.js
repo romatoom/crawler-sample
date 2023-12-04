@@ -111,7 +111,6 @@ export class Database {
     ];
 
     const result = await this.db.run(sql, values);
-    console.log("result", result);
     state.statistic.increment("products", "inserted", result.lastID);
   }
 

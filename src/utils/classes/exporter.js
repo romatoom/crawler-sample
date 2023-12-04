@@ -1,14 +1,3 @@
-import {
-  getPreparedData,
-  getPreparedDataWithRange,
-} from "#utils/data_preparer.js";
-
-import { pathOfEntityDataset } from "#utils/paths.js";
-
-import { Product } from "#utils/classes/product.js";
-import { Manual } from "#utils/classes/manual.js";
-import { ProductManual } from "#utils/classes/productManual.js";
-
 import state from "#utils/classes/state.js";
 
 import * as fs from "node:fs/promises";
@@ -17,8 +6,8 @@ export class Exporter {
   static PART_LIMIT = 2;
   static MIN_PART_LIMIT = 2;
 
-  constructor(sourceName, db) {
-    this.sourceName = sourceName;
+  constructor(source, db) {
+    this.source = source;
     this.db = db;
   }
 
@@ -99,19 +88,24 @@ export class Exporter {
     }
   }
 
-  async export(options = {}) {
-    if (options.partLimit && options.partLimit < Exporter.MIN_PART_LIMIT) {
+  async export() {
+    if (
+      this.source.exportOptions.partLimit &&
+      this.source.exportOptions.partLimit < Exporter.MIN_PART_LIMIT
+    ) {
       return console.error(
         `Минимальный размер части составляет ${Exporter.MIN_PART_LIMIT}.`
       );
     }
 
-    console.log(`Start exporting data to SQLite ("${this.sourceName}.db").`);
+    console.log(`Start exporting data to SQLite ("${this.source.name}.db").`);
 
-    if (options.partLimit) {
-      await this.exportDataToSqliteWithRange(options.partLimit);
+    if (this.source.exportOptions.partLimit) {
+      await this.exportDataToSqliteWithRange(this.source.exportOptions.partLimit);
     } else {
-      const { products, manuals, productsManuals } = await getPreparedData();
+      const { products, manuals, productsManuals } =
+        await state.dataPreparer.getPreparedData();
+
       await this.exportPart(products, manuals, productsManuals);
     }
 
@@ -120,13 +114,7 @@ export class Exporter {
     state.statistic.print();
   }
 
-  async exportPart(productsData, manualsData, productsManualsData) {
-    const products = productsData.map((data) => new Product(data));
-    const manuals = manualsData.map((data) => new Manual(data));
-    const productsManuals = productsManualsData.map(
-      (data) => new ProductManual(data)
-    );
-
+  async exportPart(products, manuals, productsManuals) {
     try {
       await this.exportProducts(products);
       await this.exportManuals(manuals);
@@ -137,7 +125,7 @@ export class Exporter {
   }
 
   async exportDataToSqliteWithRange(limit = Exporter.PART_LIMIT) {
-    const dirPath = pathOfEntityDataset("products_manuals");
+    const dirPath = state.paths.pathOfEntityDataset("products_manuals");
     const productsManualsFiles = await fs.readdir(dirPath);
 
     let currProductManual = 0;
@@ -170,7 +158,7 @@ export class Exporter {
         productsManualsRange.push(i);
       }
 
-      const preparedData = await getPreparedDataWithRange(
+      const preparedData = await state.dataPreparer.getPreparedDataWithRange(
         productsRange,
         manualsRange,
         productsManualsRange

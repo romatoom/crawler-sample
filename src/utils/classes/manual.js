@@ -4,6 +4,10 @@ import isUrl from "is-valid-http-url";
 export class Manual extends Entity {
   static requiredAttributes = ["innerId", "materialType", "pdfUrl"];
 
+  static equals(manual1, manual2) {
+    return manual1.data.pdfUrl === manual2.data.pdfUrl;
+  }
+
   constructor(data) {
     const datasetName = "manuals";
     super(data, datasetName);
