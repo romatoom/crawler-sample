@@ -3,8 +3,8 @@ import state from "#utils/classes/state.js";
 import * as fs from "node:fs/promises";
 
 export class Exporter {
-  static PART_LIMIT = 2;
-  static MIN_PART_LIMIT = 2;
+  static PART_LIMIT = 2000;
+  static MIN_PART_LIMIT = 2000;
 
   constructor(source, db) {
     this.source = source;
@@ -20,6 +20,9 @@ export class Exporter {
       data.metadata = data.metadata || {};
       data.description = data.description || null;
       data.sku = data.sku || null;
+      data.images = data.images || [];
+      data.specs = data.specs || [];
+      data.url = data.url || null;
 
       const productId = await this.db.findProductId(product);
 
@@ -89,22 +92,28 @@ export class Exporter {
   }
 
   async export() {
+    let partLimit;
+
     if (
       this.source.exportOptions.partLimit &&
       this.source.exportOptions.partLimit < Exporter.MIN_PART_LIMIT
     ) {
-      return console.error(
+      partLimit = Exporter.MIN_PART_LIMIT;
+
+      /* return console.error(
         `Минимальный размер части составляет ${Exporter.MIN_PART_LIMIT}.`
-      );
+      ); */
     }
 
     console.log(`Start exporting data to SQLite ("${this.source.name}.db").`);
 
-    if (this.source.exportOptions.partLimit) {
-      await this.exportDataToSqliteWithRange(this.source.exportOptions.partLimit);
+    if (partLimit) {
+      await this.exportDataToSqliteWithRange(partLimit);
     } else {
       const { products, manuals, productsManuals } =
         await state.dataPreparer.getPreparedData();
+
+      console.log("Export start");
 
       await this.exportPart(products, manuals, productsManuals);
     }
@@ -125,6 +134,8 @@ export class Exporter {
   }
 
   async exportDataToSqliteWithRange(limit = Exporter.PART_LIMIT) {
+    console.log(`Export with part limit ${limit} start`);
+
     const dirPath = state.paths.pathOfEntityDataset("products_manuals");
     const productsManualsFiles = await fs.readdir(dirPath);
 
@@ -158,7 +169,7 @@ export class Exporter {
         productsManualsRange.push(i);
       }
 
-      const preparedData = await state.dataPreparer.getPreparedDataWithRange(
+      const preparedData = await state.dataPreparer.getPreparedData(
         productsRange,
         manualsRange,
         productsManualsRange

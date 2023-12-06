@@ -24,13 +24,15 @@ export class Source {
     }
   }
 
-  async startDecorator() {
-    await state.storage.dropDatasets();
+  async parseDecorator(parseFunc, options = { dropDatasets: true }) {
+    if (options.dropDatasets) {
+      await state.storage.dropDatasets();
+    } else {
+      Product.lastInnerId = await state.serializer.load("lastInnerIdProduct");
+      Manual.lastInnerId = await state.serializer.load("lastInnerIdManual");
+    }
 
-    Product.lastInnerId = await state.serializer.load("lastInnerIdProduct");
-    Manual.lastInnerId = await state.serializer.load("lastInnerIdManual");
-
-    await this.parse();
+    await parseFunc();
 
     await state.storage.exportDatasets();
     await state.exporter.export();

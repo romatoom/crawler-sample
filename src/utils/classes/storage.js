@@ -1,6 +1,7 @@
 import { Dataset } from "crawlee";
+import { Product } from "#utils/classes/product.js";
+import { Manual } from "#utils/classes/manual.js";
 import state from "#utils/classes/state.js";
-
 
 export class Storage {
   constructor(sourceName) {
@@ -53,6 +54,9 @@ export class Storage {
           lastInnerIdManual: 0,
         }),
       ]);
+
+      Product.lastInnerId = 0;
+      Manual.lastInnerId = 0;
     }
   }
 }

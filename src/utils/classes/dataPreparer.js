@@ -86,7 +86,7 @@ export class DataPreparer {
         // объединение данных
 
         existedProduct.data.images = [
-          ...new Set([...existedProduct["images"], ...product.data.images]),
+          ...new Set([...existedProduct.data.images, ...product.data.images]),
         ];
 
         existedProduct.data.metadata = merge(
@@ -161,10 +161,12 @@ export class DataPreparer {
         if (existsFromReferences) {
           manualsIdsWithReference.push(manual.data.innerId);
         } else if (this.source.referenceExist(product, manual)) {
-          references.push({
-            productId: product.data.innerId,
-            manualId: manual.data.innerId,
-          });
+          references.push(
+            new ProductManual({
+              productId: product.data.innerId,
+              manualId: manual.data.innerId,
+            })
+          );
 
           manualsIdsWithReference.push(manual.data.innerId);
         }
@@ -173,34 +175,30 @@ export class DataPreparer {
 
     manualsIdsWithReference = [...new Set(manualsIdsWithReference)];
 
+    // Добавляем псевдо-продукты
     const newProducts = [];
 
-    // Добавляем псевдо-продукты
-    if ("pseudoProductForManual" in this.source) {
+    if ("pseudoProductDataForManual" in this.source) {
       for (const manual of manuals) {
         if (!manualsIdsWithReference.includes(manual.data.innerId)) {
-          const pseudoProduct = this.source.pseudoProductForManual(manual);
-          const productName = pseudoProduct.data.name;
+          const pseudoProductData =
+            this.source.pseudoProductDataForManual(manual);
 
-          const product = newProducts.find((p) => p.data.name === productName);
+          let product = newProducts.find(
+            (p) => p.data.name === pseudoProductData.name
+          );
 
           if (!product) {
-            const productId = productIdGenerator.next().value;
+            product = new Product(pseudoProductData);
+            newProducts.push(product);
+          }
 
-            newProducts.push({
-              pseudoProduct,
-            });
-
-            references.push({
-              productId: pseudoProduct.data.productId,
-              manualId: manual.data.innerId,
-            });
-          } else {
-            references.push({
+          references.push(
+            new ProductManual({
               productId: product.data.innerId,
               manualId: manual.data.innerId,
-            });
-          }
+            })
+          );
         }
       }
     }
@@ -210,6 +208,7 @@ export class DataPreparer {
 
   async manualsWithReplacedUrls(manuals) {
     const urls = manuals.map((m) => m.data.pdfUrl);
+
     await addDownloadUrls(this.source, urls);
 
     return manuals.map((m) => {
@@ -222,14 +221,15 @@ export class DataPreparer {
     const existedProductIDs = [
       ...new Set(productsManuals.map((pm) => pm.data.productId)),
     ];
+
     return products.filter((p) => existedProductIDs.includes(p.data.innerId));
   }
 
-  async getPreparedData() {
-    log.info("Prepare and receive data.");
+  async readData() {
+    console.log("Read manuals");
 
-    console.log("Read manuals from output file");
     const rawDataManuals = fs.readFileSync(state.paths.pathOfEntity("manuals"));
+
     let manuals = JSON.parse(rawDataManuals).map((data) => new Manual(data));
 
     if (
@@ -238,67 +238,34 @@ export class DataPreparer {
       manuals = await this.manualsWithReplacedUrls(manuals);
     }
 
-    console.log("Read products from output file");
+    console.log("Read products");
+
     const rawDataProducts = fs.readFileSync(
       state.paths.pathOfEntity("products")
     );
+
     const products = JSON.parse(rawDataProducts).map(
       (data) => new Product(data)
     );
 
-    console.log("Prepare products from output file");
-    const { preparedProducts, idsForReplace: productsIdsForReplace } =
-      this.prepareProducts(products);
-
-    console.log("Prepare manuals from output file");
-    const { preparedManuals, idsForReplace: manualsIdsForReplace } =
-      this.prepareManuals(manuals);
-
-    let preparedProductsManuals = [];
-
-    console.log("Prepare products-manuals from output file");
+    console.log("Read products_manuals");
 
     const rawDataProductsManuals = fs.readFileSync(
       state.paths.pathOfEntity("products_manuals")
     );
 
-    const productsManuals = JSON.parse(rawDataProductsManuals).map(data => new ProductManual(data));
-
-    if (productsManuals.length > 0) {
-      preparedProductsManuals = this.prepareProductsManuals(
-        productsManuals,
-        productsIdsForReplace,
-        manualsIdsForReplace
-      );
-    }
-
-    if ("referenceExist" in this.source) {
-      const { references, newProducts } = this.productsManualsReferences(
-        preparedProducts,
-        preparedManuals,
-        preparedProductsManuals
-      );
-
-      preparedProductsManuals = [...preparedProductsManuals, ...references];
-      preparedProducts.push(...newProducts);
-    }
+    const productsManuals = JSON.parse(rawDataProductsManuals).map(
+      (data) => new ProductManual(data)
+    );
 
     return {
-      products: this.clearedProducts(preparedProductsManuals, preparedProducts),
-      manuals: preparedManuals,
-      productsManuals: preparedProductsManuals,
+      products,
+      manuals,
+      productsManuals,
     };
   }
 
-  async getPreparedDataWithRange(
-    productsRange,
-    manualsRange,
-    productsManualsRange
-  ) {
-    log.info("Prepare and receive data.");
-
-    ///
-
+  async readDataWithRange(productsRange, manualsRange, productsManualsRange) {
     console.log("Read manuals");
 
     const promises = [];
@@ -326,8 +293,6 @@ export class DataPreparer {
       manuals = await this.manualsWithReplacedUrls(manuals);
     }
 
-    ///
-
     console.log("Read products");
 
     promises.length = 0;
@@ -348,8 +313,6 @@ export class DataPreparer {
     const products = (await Promise.all(promises)).map(
       (p) => new Product(JSON.parse(p))
     );
-
-    ////
 
     console.log("Read products_manuals");
 
@@ -372,19 +335,36 @@ export class DataPreparer {
       (p) => new ProductManual(JSON.parse(p))
     );
 
-    ///
+    return {
+      products,
+      manuals,
+      productsManuals,
+    };
+  }
+
+  async getPreparedData(productsRange, manualsRange, productsManualsRange) {
+    log.info("Prepare and receive data.");
+
+    const data =
+      productsRange && manualsRange && productsManualsRange
+        ? await this.readDataWithRange(
+            productsRange,
+            manualsRange,
+            productsManualsRange
+          )
+        : await this.readData();
+
+    const { products, manuals, productsManuals } = data;
 
     console.log("Prepare products");
+
     const { preparedProducts, idsForReplace: productsIdsForReplace } =
       this.prepareProducts(products);
 
-    ///
-
     console.log("Prepare manuals");
+
     const { preparedManuals, idsForReplace: manualsIdsForReplace } =
       this.prepareManuals(manuals);
-
-    ///
 
     console.log("Prepare products_manuals");
 
@@ -406,10 +386,9 @@ export class DataPreparer {
       );
 
       preparedProductsManuals = [...preparedProductsManuals, ...references];
+
       preparedProducts.push(...newProducts);
     }
-
-    ///
 
     return {
       products: this.clearedProducts(preparedProductsManuals, preparedProducts),
