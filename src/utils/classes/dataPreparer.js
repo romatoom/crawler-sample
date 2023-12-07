@@ -184,7 +184,9 @@ export class DataPreparer {
           const pseudoProductData =
             this.source.pseudoProductDataForManual(manual);
 
-          let product = newProducts.find(
+          if (!pseudoProductData) continue;
+
+          let product = [...products, ...newProducts].find(
             (p) => p.data.name === pseudoProductData.name
           );
 
@@ -217,12 +219,14 @@ export class DataPreparer {
     });
   }
 
-  clearedProducts(productsManuals, products) {
-    const existedProductIDs = [
-      ...new Set(productsManuals.map((pm) => pm.data.productId)),
+  clearedEntities(productsManuals, entities) {
+    const idAttr = `${entities[0].constructor.name.toLowerCase()}Id`;
+
+    const existedIDs = [
+      ...new Set(productsManuals.map((pm) => pm.data[idAttr])),
     ];
 
-    return products.filter((p) => existedProductIDs.includes(p.data.innerId));
+    return entities.filter((e) => existedIDs.includes(e.data.innerId));
   }
 
   async readData() {
@@ -391,8 +395,8 @@ export class DataPreparer {
     }
 
     return {
-      products: this.clearedProducts(preparedProductsManuals, preparedProducts),
-      manuals: preparedManuals,
+      products: this.clearedEntities(preparedProductsManuals, preparedProducts),
+      manuals: this.clearedEntities(preparedProductsManuals, preparedManuals),
       productsManuals: preparedProductsManuals,
     };
   }

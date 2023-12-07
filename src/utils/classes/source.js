@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { Router, log } from "crawlee";
+import { Router } from "crawlee";
 import state from "#utils/classes/state.js";
 import { Product } from "#utils/classes/product.js";
 import { Manual } from "#utils/classes/manual.js";
@@ -28,8 +28,19 @@ export class Source {
     if (options.dropDatasets) {
       await state.storage.dropDatasets();
     } else {
-      Product.lastInnerId = await state.serializer.load("lastInnerIdProduct");
-      Manual.lastInnerId = await state.serializer.load("lastInnerIdManual");
+      try {
+        Product.lastInnerId = await state.serializer.load("lastInnerIdProduct");
+        Manual.lastInnerId = await state.serializer.load("lastInnerIdManual");
+      } catch (e) {
+        await Promise.all([
+          state.serializer.dump({
+            lastInnerIdProduct: 0,
+          }),
+          state.serializer.dump({
+            lastInnerIdManual: 0,
+          }),
+        ]);
+      }
     }
 
     await parseFunc();

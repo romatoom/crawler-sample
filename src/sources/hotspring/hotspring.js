@@ -4,7 +4,7 @@ import { Source } from "#utils/classes/source.js";
 
 import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
-export default class TestSource extends Source {
+export default class HotspringSource extends Source {
   baseURL = "https://www.hotspring.com";
   brand = "Hotspring";
   name = "hotspring";

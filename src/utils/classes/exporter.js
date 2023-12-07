@@ -41,6 +41,8 @@ export class Exporter {
       const data = { ...manual.data };
 
       data.metadata = data.metadata || {};
+      data.languages = data.languages || [];
+      data.title = data.title || null;
 
       const manualId = await this.db.findManualId(manual);
 
