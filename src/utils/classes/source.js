@@ -24,7 +24,13 @@ export class Source {
     }
   }
 
-  async parseDecorator(parseFunc, options = { dropDatasets: true }) {
+  async parseDecorator(
+    parseFunc,
+    options = { dropDatasets: true, onlyParse: false }
+  ) {
+    options.dropDatasets = options.dropDatasets ?? true;
+    options.onlyParse = options.onlyParse ?? false;
+
     if (options.dropDatasets) {
       await state.storage.dropDatasets();
     } else {
@@ -44,6 +50,7 @@ export class Source {
     }
 
     await parseFunc();
+    if (options.onlyParse) return;
 
     await state.storage.exportDatasets();
     await state.exporter.export();
