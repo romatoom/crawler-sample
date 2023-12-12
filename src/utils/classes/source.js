@@ -8,8 +8,10 @@ import { Manual } from "#utils/classes/manual.js";
 export class Source {
   exportOptions = {};
 
-  constructor() {
-    this.router = Router.create();
+  constructor(options = { createRouter: true }) {
+    if (options.createRouter) {
+      this.router = Router.create();
+    }
   }
 
   async addRoutes() {

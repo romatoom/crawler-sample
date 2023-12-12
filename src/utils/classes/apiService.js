@@ -8,8 +8,8 @@ export class ApiService {
     },
   };
 
-  static async get(url) {
-    const response = await axios.get(url);
+  static async get(url, config = {}) {
+    const response = await axios.get(url, config);
     return response.data;
   }
 

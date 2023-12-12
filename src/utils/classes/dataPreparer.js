@@ -30,9 +30,8 @@ export class DataPreparer {
     const idsForReplace = {};
 
     for (const [_, manuals] of Object.entries(groupedManuals)) {
-      const manual = manuals.find((m) => m.data.language === "English") || {
-        ...manuals[0],
-      };
+      const manual =
+        manuals.find((m) => m.data.language === "English") || manuals[0];
 
       // Set languages
 
@@ -63,7 +62,7 @@ export class DataPreparer {
 
       if (!("referenceExist" in this.source)) {
         manuals.forEach((m) => {
-          idsForReplace[m.innerId] = manual.data.innerId;
+          idsForReplace[m.data.innerId] = manual.data.innerId;
         });
       }
     }

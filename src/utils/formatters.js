@@ -48,8 +48,12 @@ export function normalizeBrand(brand) {
       return "HP (Hewlett-Packard)";
 
     default:
-      return startCase(camelCase(brand));
+      return upperCaseFirstLetters(brand);
   }
+}
+
+export function upperCaseFirstLetters(str) {
+  return startCase(camelCase(str));
 }
 
 export function getLanguagesByLocales(locales) {
