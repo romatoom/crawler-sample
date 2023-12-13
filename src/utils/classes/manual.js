@@ -22,6 +22,7 @@ export class Manual extends Entity {
     }
 
     if (!isUrl(this.data.pdfUrl)) {
+      console.log(this.data.pdfUrl);
       return { result: false, message: "Invalid manual URL" };
     }
 

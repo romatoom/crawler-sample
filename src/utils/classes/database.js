@@ -161,4 +161,12 @@ export class Database {
   /* destructor() {
     await this.db.close()
   };*/
+
+  async readProducts() {
+    return this.db.all("SELECT * FROM products");
+  }
+
+  async readManuals() {
+    return this.db.all("SELECT * FROM manuals");
+  }
 }
