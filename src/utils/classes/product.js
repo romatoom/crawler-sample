@@ -14,9 +14,8 @@ export class Product extends Entity {
   constructor(data) {
     const datasetName = "products";
 
-    if (!data.specs) {
-      data.specs = [];
-    }
+    data.specs = data.specs || [];
+    data.images = data.images || [];
 
     super(data, datasetName);
   }
