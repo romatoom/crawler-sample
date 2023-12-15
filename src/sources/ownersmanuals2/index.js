@@ -35,6 +35,6 @@ export default async function start() {
     },
   ]);
 
-  //await exportDatasets();
-  //await exportDataToSqlite();
+  await exportDatasets();
+  await exportDataToSqlite();
 }

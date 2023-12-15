@@ -24,9 +24,7 @@ export class Entity {
     const validate = this.validate();
 
     if (validate.result === false) {
-      throw new Error(
-        `${this.constructor.name} invalid: ${validate.message}, data: ${data}`
-      );
+      throw new Error(`${this.constructor.name} invalid: ${validate.message}`);
     }
   }
 
