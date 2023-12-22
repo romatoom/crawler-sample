@@ -9,6 +9,10 @@ export class Entity {
     return ++this.lastInnerId;
   }
 
+  static backInnerId() {
+    return --this.lastInnerId;
+  }
+
   constructor(data, datasetName) {
     this.#datasetName = datasetName;
 
@@ -24,6 +28,7 @@ export class Entity {
     const validate = this.validate();
 
     if (validate.result === false) {
+      this.constructor.backInnerId();
       throw new Error(`${this.constructor.name} invalid: ${validate.message}`);
     }
   }

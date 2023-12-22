@@ -44,6 +44,8 @@ export class Exporter {
       data.languages = data.languages || [];
       data.title = data.title || null;
 
+      if (data.materialType.length >= 60) console.log(data.materialType);
+
       const manualId = await this.db.findManualId(manual);
 
       if (manualId) {

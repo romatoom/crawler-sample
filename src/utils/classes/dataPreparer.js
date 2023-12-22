@@ -233,7 +233,15 @@ export class DataPreparer {
 
     const rawDataManuals = fs.readFileSync(state.paths.pathOfEntity("manuals"));
 
-    let manuals = JSON.parse(rawDataManuals).map((data) => new Manual(data));
+    let manuals = JSON.parse(rawDataManuals).map((data) => {
+      if (
+        data.materialType ===
+        "Interoperability Matrix - Parts, Interoperability Matrix - User Guides"
+      ) {
+        data.materialType = "User Guide";
+      }
+        return new Manual(data);
+    });
 
     if (
       SOURCES_WITH_NEED_REPLACE_URL.includes(this.source.name.toUpperCase())
