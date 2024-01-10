@@ -240,7 +240,7 @@ export class DataPreparer {
       ) {
         data.materialType = "User Guide";
       }
-        return new Manual(data);
+      return new Manual(data);
     });
 
     if (
