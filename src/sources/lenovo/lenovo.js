@@ -5,8 +5,6 @@ import state from "#utils/classes/state.js";
 
 import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
-// import { OppoAPI } from "./api.js";
-
 export default class LenovoSource extends Source {
   baseURL = "https://pcsupport.lenovo.com/us/en";
   brand = "Lenovo";
@@ -133,10 +131,7 @@ export default class LenovoSource extends Source {
     }
 
     await this.cheerioCrawler.run(
-      targets.filter(
-        (t) =>
-          !successedURLs.includes(t.url)
-      )
+      targets.filter((t) => !successedURLs.includes(t.url))
     );
   }
 
