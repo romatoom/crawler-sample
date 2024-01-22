@@ -4,7 +4,7 @@ import { Source } from "#utils/classes/source.js";
 
 import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
-export default class LenovoSource extends Source {
+export default class VornadoSource extends Source {
   baseURL = "https://www.vornado.com";
   brand = "Vornado";
   name = "vornado";

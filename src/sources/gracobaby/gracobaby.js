@@ -5,7 +5,7 @@ import state from "#utils/classes/state.js";
 
 import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
-export default class SramSource extends Source {
+export default class GracobabySource extends Source {
   baseURL = "https://www.gracobaby.com";
   name = "gracobaby";
   brand = "Graco";

@@ -8,7 +8,7 @@ import { HooverAPI } from "./api.js";
 
 import state from "#utils/classes/state.js";
 
-export default class LenovoSource extends Source {
+export default class HoverSource extends Source {
   baseURL = "https://hoover.com";
   brand = "Hoover";
   name = "hoover";

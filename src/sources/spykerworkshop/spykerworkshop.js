@@ -5,7 +5,7 @@ import state from "#utils/classes/state.js";
 
 import { BASE_MANUAL_TITLE_JOINER } from "#utils/formatters.js";
 
-export default class LenovoSource extends Source {
+export default class SpykerWorkshopSource extends Source {
   baseURL = "https://spykerworkshop.com";
   brand = "Spyker Workshop";
   name = "spykerworkshop";
