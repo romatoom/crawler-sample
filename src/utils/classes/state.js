@@ -16,6 +16,7 @@ class State {
     this.exporter = new Exporter(source, this.db);
     this.dataPreparer = new DataPreparer(source);
     this.paths = new Paths(this.sourceName);
+    this.variables = {};
   }
 }
 
