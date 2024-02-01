@@ -20,7 +20,6 @@ saved_variables/dns/*
 !saved_variables/dns/productsURLs.json
 !saved_variables/dns/processedURLs.json
 
-
-databases/*_test.db
+databases/*
 
 tmp.js

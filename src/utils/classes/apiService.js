@@ -3,8 +3,7 @@ import axios from "axios";
 export class ApiService {
   static defaultParams = {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      Accept: "text/html, */*; q=0.01",
+      Accept: "*/*",
     },
   };
 
